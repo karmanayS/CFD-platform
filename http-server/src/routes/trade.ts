@@ -9,25 +9,20 @@ redis.connect()
 })
 .catch((err) => {
     console.log(err)
-})
+}) //Here we are assuming that someone will hit the server later after the client connection is resolved or rejected because if someone hits the server instantly as the server is up then accessing redis methods might throw error because the redis client may not be connected yet...but this doesnt usually happen
 
 tradeRouter.post("/create",async(req,res) => {
     const {asset,type,qty,amount} = req.body;
-    let orderId = "";
-    try {
-        await redis.subscribe("openOrderId",(message,channel) => {
-          orderId = JSON.parse(message);  
-        })    
-        await redis.xAdd('orders', '*', {
+    let orderId:string;
+    try {    
+        await redis.xAdd('createOrder', '*', {
             asset,
             type,
             qty,
             amount
         })
-        if (orderId !== "") {
-            redis.unsubscribe("openOrderId");
-            res.json({orderId});
-        }
+        res.json({message: "message sent"})
+        // await read from the other stream which has incoming messages from the engine
     } catch (err) {
         console.log(err);
         return res.json("error while creating oder")
@@ -53,11 +48,5 @@ tradeRouter.post("/close",async(req,res) => {
 
 export default tradeRouter;
 
-async function f() {
-    await new Promise((resolve,reject) => {
-        setTimeout(resolve,3000)
-    })
 
-    console.log("promise is resolved")
-}
 

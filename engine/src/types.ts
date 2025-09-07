@@ -16,8 +16,8 @@ export interface User {
 export interface OpenOrders {
     asset : string,
     type : "long" | "short",
-    margin : number,
-    leverage : number,
+    qty: number,
+    amount: number
 }
 
 export interface SupportedAssets {
