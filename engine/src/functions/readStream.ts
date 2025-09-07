@@ -1,6 +1,7 @@
 import { createClient } from "redis";
 
 const redis = createClient()
+
 redis.connect().then(() => {
     console.log("inside readStream file")
 }).catch((err) => {
@@ -15,8 +16,6 @@ export async function readStream() {
         }, {
             BLOCK: 0
         })
-        
-        
         return newOrder[0].messages;
     } catch (error) {
         return console.log(error);

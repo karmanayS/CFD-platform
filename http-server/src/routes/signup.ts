@@ -23,3 +23,4 @@ signupRouter.post("/" , async(req,res) => {
 })
 
 export default signupRouter;
+//create a user in engine and give it default balance of 5k
