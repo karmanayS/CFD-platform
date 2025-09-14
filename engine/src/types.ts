@@ -14,6 +14,7 @@ export interface User {
 }
 
 export interface OpenOrders {
+    userId: string,
     orderId : string,
     asset : string,
     type : "long" | "short",

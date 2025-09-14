@@ -1,6 +1,9 @@
 import { createClient } from "redis";
 import { openOrders, PRICES, users } from "./db";
-import { readStream } from "./functions/openOrder";
+import { getUsdBalance } from "./functions/getUsdBalance";
+import { stream } from "./redisClient";
+import { createOrder } from "./functions/openOrder";
+import { closeOrder } from "./functions/closeOrder";
 
 const redis = createClient();
 
@@ -23,7 +26,47 @@ async function main() {
         })
 
         while (true) {
-            await readStream(users,openOrders,PRICES);
+            const data = await stream.xRead({
+                key : "EX-EN",
+                id : "$"
+            }, {
+                BLOCK : 0
+            })
+
+            if (!data) return console.log("error data doesnt exist");
+            const message = data[0].messages[0].message;
+            const payload = JSON.parse(message.payload)
+            
+            if(message.type === "openOrder") {
+                const orderId = createOrder(payload,users,openOrders,PRICES);
+                await stream.xAdd("EN-EX","*",{
+                    type : "orderId",
+                    payload: JSON.stringify({
+                        orderId
+                    })
+                })
+            }
+            
+            if(message.type === "closeOrder") {
+                const status = closeOrder(payload.userId,payload.orderId,openOrders,users,PRICES);
+                await stream.xAdd("EN-EX","*",{
+                    type : "closeOrderStatus",
+                    payload : JSON.stringify({
+                        status
+                    })
+                });
+            }
+
+            if(message.type === "usdBalance") {
+                const usdBalance = getUsdBalance(payload.userId,users);
+                await stream.xAdd("EN-EX","*",{
+                    type: "usdBalance",
+                    payload : JSON.stringify({
+                        usdBalance
+                    })
+                })
+            }
+
         }
     } catch(err) {
         return console.log(err)

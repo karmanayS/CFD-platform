@@ -15,7 +15,7 @@ export const PRICES:Prices[] = [{
 export const users:User[] = [{
     userId: "user1",
     balance: {
-        amount :5000,
+        amount :500000,
         locked : 0
     }
 }];
