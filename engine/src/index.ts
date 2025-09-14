@@ -1,5 +1,5 @@
 import { createClient } from "redis";
-import { openOrders, PRICES, users } from "./db";
+import { openOrders, PRICES, supportedAssets, users } from "./db";
 import { getUsdBalance } from "./functions/getUsdBalance";
 import { stream } from "./redisClient";
 import { createOrder } from "./functions/openOrder";
@@ -63,6 +63,15 @@ async function main() {
                     type: "usdBalance",
                     payload : JSON.stringify({
                         usdBalance
+                    })
+                })
+            }
+
+            if(message.type === "supportedAssets") {
+                await stream.xAdd("EN-EX","*",{
+                    type: "supportedAssets",
+                    payload: JSON.stringify({
+                        supportedAssets
                     })
                 })
             }

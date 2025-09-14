@@ -55,6 +55,7 @@ tradeRouter.post("/close",async(req,res) => {
             //@ts-ignore
             const message = data[0].messages[0].message;
             const payload = JSON.parse(message.payload);
+            if (message.type === "closeOrderStatus") return res.json({status : payload.status});
         }
     } catch (err) {
         console.log(err);
