@@ -9,7 +9,8 @@ export interface User {
     userId : string,
     balance : {
         amount : number,
-        locked : number
+        margin:number,
+        locked : number //contains leverage money from the exchange
     }
 }
 
@@ -19,7 +20,9 @@ export interface OpenOrders {
     asset : string,
     type : "long" | "short",
     qty: number,
-    amount: number
+    leverage : number,
+    amount:number,
+    margin: number
 }
 
 export interface SupportedAssets {

@@ -4,7 +4,7 @@ import { redis } from "../redisClient";
 const tradeRouter = express.Router();
 
 tradeRouter.post("/create",async(req,res) => {
-    const {asset,type,qty,amount,userId} = req.body;
+    const {asset,type,qty,leverage,userId} = req.body;
     try {    
         await redis.xAdd('EX-EN', '*', {
             type: "openOrder",
@@ -12,6 +12,7 @@ tradeRouter.post("/create",async(req,res) => {
                 asset,
                 type,
                 qty,
+                leverage,
                 userId
             })
         })    

@@ -16,6 +16,7 @@ export const users:User[] = [{
     userId: "user1",
     balance: {
         amount :500000,
+        margin : 0,
         locked : 0
     }
 }];
