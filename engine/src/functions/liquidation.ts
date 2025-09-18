@@ -1,6 +1,6 @@
 import { OpenOrders, Prices, User } from "../types";
 
-export async function liquidation(orderId:string,prices:Prices[],openOrders:OpenOrders[],userId:string,users:User[]) {
+export function liquidation(orderId:string,prices:Prices[],openOrders:OpenOrders[],userId:string,users:User[]) {
     for (let i =0 ; i<openOrders.length;i++) {
         if (openOrders[i].orderId === orderId) {
             const margin = openOrders[i].margin;
@@ -26,6 +26,7 @@ export async function liquidation(orderId:string,prices:Prices[],openOrders:Open
                         break
                     }
                 }
+                return "liquidated";
             }
         } else {
             console.log("no open order with the following order ID");

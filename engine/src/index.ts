@@ -4,6 +4,7 @@ import { getUsdBalance } from "./functions/getUsdBalance";
 import { stream } from "./redisClient";
 import { createOrder } from "./functions/openOrder";
 import { closeOrder } from "./functions/closeOrder";
+import { liquidation } from "./functions/liquidation";
 
 const redis = createClient();
 
@@ -45,6 +46,7 @@ async function main() {
                         orderId
                     })
                 })
+                //setInterval(() => {liquidation(orderId as string,PRICES,openOrders,payload.userId,users)});
             }
             
             if(message.type === "closeOrder") {
