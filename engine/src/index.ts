@@ -4,7 +4,7 @@ import { getUsdBalance } from "./functions/getUsdBalance";
 import { stream } from "./redisClient";
 import { createOrder } from "./functions/openOrder";
 import { closeOrder } from "./functions/closeOrder";
-import { liquidation } from "./functions/liquidation";
+import liquidate from "./functions/liquidate";
 
 const redis = createClient();
 
@@ -24,6 +24,7 @@ async function main() {
                     }
                 }
             })
+            liquidate(openOrders,PRICES,users);
         })
 
         while (true) {
@@ -46,7 +47,12 @@ async function main() {
                         orderId
                     })
                 })
-                //setInterval(() => {liquidation(orderId as string,PRICES,openOrders,payload.userId,users)});
+                // const intervalId = setInterval(() => {
+                //     const res = liquidation(orderId as string,PRICES,openOrders,payload.userId,users);
+                //     if (res === "liquidated" || res === "order doesnt exist") {
+                //         clearInterval(intervalId);
+                //     }
+                // },500);
             }
             
             if(message.type === "closeOrder") {
