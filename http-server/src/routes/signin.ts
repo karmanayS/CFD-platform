@@ -1,10 +1,10 @@
 import express from "express";
-import jwt, { sign } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import {Resend} from "resend";
 import dotenv from 'dotenv'
 
 dotenv.config();
-const resend = new Resend('re_YreQn8zr_5sdNtwT8vK8bX1PY2kQBG8rL');
+const resend = new Resend(process.env.RESEND_API_KEY ?? "");
 
 const signinRouter = express.Router();
 

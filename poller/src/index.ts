@@ -57,11 +57,8 @@ async function main() {
                 }
             }
         }
-    }
-
-    setInterval(() => {
         redis.publish("TICKS",JSON.stringify(ticks))
-    },100);
+    }
 
     backpackSocket.onclose = (event) => {
         console.log("connection to backpack server closed",event);
