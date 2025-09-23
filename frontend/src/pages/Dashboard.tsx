@@ -1,4 +1,4 @@
-import { useEffect, useState} from "react"
+import { useState} from "react"
 import { PlaceOrder } from "../components/PlaceOrder"
 import { SupportedAssets } from "../components/SupportedAssets";
 import { usePriceFeed } from "../hooks/usePriceFeed";

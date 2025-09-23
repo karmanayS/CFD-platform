@@ -16,6 +16,7 @@ export const SupportedAssets = ({assetPrices}:{assetPrices:assetPrice[]}) => {
                 const response = await fetch("http://localhost:3000/api/v1/supportedAssets");
                 if (!response.ok) throw new Error(`response status: ${response.status}`)
                 const data = await response.json();
+              console.log(data);
                 setAssets(data.supportedAssets);    
             } catch (err) {
                 return console.log(err);

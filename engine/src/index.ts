@@ -5,6 +5,7 @@ import { stream } from "./redisClient";
 import { createOrder } from "./functions/openOrder";
 import { closeOrder } from "./functions/closeOrder";
 import liquidate from "./functions/liquidate";
+import { OpenOrders } from "./types";
 
 const redis = createClient();
 
@@ -24,7 +25,7 @@ async function main() {
                     }
                 }
             })
-            liquidate(openOrders,PRICES,users);
+            if(openOrders.length > 0) liquidate(openOrders,PRICES,users);
         })
 
         while (true) {
@@ -47,6 +48,7 @@ async function main() {
                         orderId
                     })
                 })
+                console.log(openOrders);
                 // const intervalId = setInterval(() => {
                 //     const res = liquidation(orderId as string,PRICES,openOrders,payload.userId,users);
                 //     if (res === "liquidated" || res === "order doesnt exist") {
@@ -80,6 +82,21 @@ async function main() {
                     type: "supportedAssets",
                     payload: JSON.stringify({
                         supportedAssets
+                    })
+                })
+            }
+
+            if(message.type === "getOpenOrders") {
+                const orders:OpenOrders[] = [];
+                openOrders.map((o) => {
+                    if (o.userId === payload.userId) {
+                        orders.push(o);
+                    }
+                })
+                await stream.xAdd("EN-EX", "*" ,{
+                    type : "openOrders",
+                    payload : JSON.stringify({
+                        openOrders: orders
                     })
                 })
             }

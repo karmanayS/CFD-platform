@@ -11,7 +11,6 @@ const signinRouter = express.Router();
 signinRouter.post("/", async(req,res) => {
     const {email} = req.body;
     const token = jwt.sign({email},process.env.JWT_SECRET as string);
-
     
     const {data,error} = await resend.emails.send({
         from: 'onboarding@resend.dev',

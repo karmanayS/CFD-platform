@@ -31,7 +31,7 @@ tradeRouter.post("/create",async(req,res) => {
         } else throw new Error("didnt receive orderId from the redis stream");   
     } catch (err) {
         console.log(err);
-        return res.json("error while creating oder")
+        return res.status(500).json("error while creating oder")
     }   
     
 })

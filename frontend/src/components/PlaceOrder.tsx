@@ -1,14 +1,30 @@
 import { useState } from "react"
 import { OrderValue } from "./OrderValue";
 import type { assetPrice } from "../hooks/usePriceFeed";
+import axios from "axios";
+import toast, { Toaster } from 'react-hot-toast';
 
 export const PlaceOrder = ({asset,assetPrices}:{asset:string,assetPrices:assetPrice[]}) => {
     const [orderType,setOrderType] = useState("BUY");
     const [qty,setQty] = useState(0);
     const [leverage,setLeverage] = useState(1);
 
-    function placeOrder() {
-
+    async function placeOrder() {
+        const body = {
+            asset,
+            type: orderType,
+            qty,
+            leverage,
+            userId : "user1"
+        }
+        try {    
+            const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/trade/create`, body);
+            if (response.status !== 200) throw new Error("didnt receive orderId")
+            toast.success("Placed order successfully") 
+        } catch(err) {
+            toast.error("ERROR: couldn't place order")
+            return console.log(err);
+        }    
     }
 
     return <div className="flex flex-col p-4 border">
@@ -36,6 +52,7 @@ export const PlaceOrder = ({asset,assetPrices}:{asset:string,assetPrices:assetPr
             </div>
         </div>
 
-        <button className="py-1 text-center mt-4 bg-slate-600 hover:bg-slate-800 rounded-md text-sm" > Place Order </button>
+        <button onClick={placeOrder} className="py-1 text-center mt-4 bg-slate-600 hover:bg-slate-800 rounded-md text-sm" > Place Order </button>
+        <Toaster />
     </div>
 }
