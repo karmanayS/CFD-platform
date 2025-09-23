@@ -1,10 +1,10 @@
 import { useState } from "react"
 import { OrderValue } from "./OrderValue";
-import type { assetPrice } from "../hooks/usePriceFeed";
+import type { AssetPrice } from "../hooks/usePriceFeed";
 import axios from "axios";
 import toast, { Toaster } from 'react-hot-toast';
 
-export const PlaceOrder = ({asset,assetPrices}:{asset:string,assetPrices:assetPrice[]}) => {
+export const PlaceOrder = ({asset,assetPrices}:{asset:string,assetPrices:AssetPrice[]}) => {
     const [orderType,setOrderType] = useState("BUY");
     const [qty,setQty] = useState(0);
     const [leverage,setLeverage] = useState(1);

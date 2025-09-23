@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export interface assetPrice {
+export interface AssetPrice {
     asset: string,
     bidPrice: number,
     askPrice: number

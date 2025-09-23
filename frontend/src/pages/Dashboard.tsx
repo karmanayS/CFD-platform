@@ -28,6 +28,6 @@ export const Dashboard = () => {
             <div className="w-60" > <PlaceOrder assetPrices={assetPrices} asset={asset} /> </div>
         </div>
 
-        <div className="p-4 text-center border " > ORDERS </div>
+        <div className="border" > ORDERS </div>
     </div>
 }

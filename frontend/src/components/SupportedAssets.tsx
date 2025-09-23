@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { assetPrice } from "../hooks/usePriceFeed";
+import type { AssetPrice } from "../hooks/usePriceFeed";
 
 export interface SupportedAssets {
     symbol  : string,
@@ -7,7 +7,7 @@ export interface SupportedAssets {
     imageUrl : string
 }
 
-export const SupportedAssets = ({assetPrices}:{assetPrices:assetPrice[]}) => {
+export const SupportedAssets = ({assetPrices}:{assetPrices:AssetPrice[]}) => {
     const [assets,setAssets] = useState<SupportedAssets[]>([]);
 
     useEffect(() => {
