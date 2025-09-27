@@ -54,7 +54,7 @@ export function createOrder(newOrder:NewOrder,users:User[],openOrders:OpenOrders
                 margin, 
                 amount : locked,
             })
-            console.log(openOrders.find(o => o.orderId === orderId));
+            // console.log(openOrders.find(o => o.orderId === orderId));
             return orderId;
         } else throw new Error("cant get new order from stream")
 

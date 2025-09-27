@@ -49,12 +49,6 @@ async function main() {
                     })
                 })
                 console.log(openOrders);
-                // const intervalId = setInterval(() => {
-                //     const res = liquidation(orderId as string,PRICES,openOrders,payload.userId,users);
-                //     if (res === "liquidated" || res === "order doesnt exist") {
-                //         clearInterval(intervalId);
-                //     }
-                // },500);
             }
             
             if(message.type === "closeOrder") {
