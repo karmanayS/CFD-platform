@@ -6,7 +6,7 @@ import { usePriceFeed } from "../hooks/usePriceFeed";
 export const Dashboard = () => {
     const [asset,setAsset] = useState("BTC");
     const assetPrices = usePriceFeed();    
-    
+
     return <div className="flex flex-col h-screen p-2">
         <div className="p-4 w-full mb-4 text-center border" > NAVBAR </div>
 

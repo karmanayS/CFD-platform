@@ -11,11 +11,12 @@ assetRouter.get("/",async(req,res) => {
                 message: "null"
             })
         })
+        
         const data = await redis.xRead({
             key: "EN-EX",
             id: "$"
         }, {
-            BLOCK: 0
+            BLOCK: 5000, COUNT: 1 
         })
         if (data) {
             //@ts-ignore

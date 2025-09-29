@@ -39,6 +39,7 @@ async function main() {
             if (!data) return console.log("error data doesnt exist");
             const message = data[0].messages[0].message;
             const payload = JSON.parse(message.payload)
+            if (!payload) return console.log("error payload doesnt exist");
             
             if(message.type === "openOrder") {
                 const orderId = createOrder(payload,users,openOrders,PRICES);
