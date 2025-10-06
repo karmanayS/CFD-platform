@@ -5,7 +5,7 @@ import axios from "axios";
 import toast, { Toaster } from 'react-hot-toast';
 
 export const PlaceOrder = ({asset,assetPrices}:{asset:string,assetPrices:AssetPrice[]}) => {
-    const [orderType,setOrderType] = useState("BUY");
+    const [orderType,setOrderType] = useState("long");
     const [qty,setQty] = useState(0);
     const [leverage,setLeverage] = useState(1);
 
@@ -17,6 +17,7 @@ export const PlaceOrder = ({asset,assetPrices}:{asset:string,assetPrices:AssetPr
             leverage,
             userId : "user1"
         }
+    
         try {    
             const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/trade/create`, body);
             if (response.status !== 200) throw new Error("didnt receive orderId")
@@ -29,8 +30,8 @@ export const PlaceOrder = ({asset,assetPrices}:{asset:string,assetPrices:AssetPr
 
     return <div className="flex flex-col p-4 border">
         <div className="flex mb-4" >
-            <button onClick={() => setOrderType("BUY")} className={`border w-1/2 py-1 rounded-md text-center ${(orderType === "BUY") ? "bg-blue-500" : "bg-white"} `} > BUY </button>
-            <button onClick={() => setOrderType("SELL")} className={`border w-1/2 py-1 rounded-md text-center ${(orderType === "SELL") ? "bg-red-500" : "bg-white"} `} > SELL </button>
+            <button onClick={() => setOrderType("long")} className={`border w-1/2 py-1 rounded-md text-center ${(orderType === "long") ? "bg-green-500" : "bg-white"} `} > BUY </button>
+            <button onClick={() => setOrderType("short")} className={`border w-1/2 py-1 rounded-md text-center ${(orderType === "short") ? "bg-red-500" : "bg-white"} `} > SELL </button>
         </div>
 
         <input onChange={(e) => setQty(parseFloat(e.target.value))} type="number" step="any" placeholder="quantity" className=" focus:outline-none px-2 py-1 rounded-md border" />

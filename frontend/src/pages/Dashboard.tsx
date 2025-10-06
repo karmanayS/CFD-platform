@@ -2,6 +2,7 @@ import { useState} from "react"
 import { PlaceOrder } from "../components/PlaceOrder"
 import { SupportedAssets } from "../components/SupportedAssets";
 import { usePriceFeed } from "../hooks/usePriceFeed";
+import { Orders } from "../components/Orders";
 
 export const Dashboard = () => {
     const [asset,setAsset] = useState("BTC");
@@ -28,6 +29,6 @@ export const Dashboard = () => {
             <div className="w-60" > <PlaceOrder assetPrices={assetPrices} asset={asset} /> </div>
         </div>
 
-        <div className="border" > ORDERS </div>
+        <div className="border" > <Orders assetPrices={assetPrices} /> </div>
     </div>
 }

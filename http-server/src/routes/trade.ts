@@ -5,7 +5,8 @@ const tradeRouter = express.Router();
 
 tradeRouter.post("/create",async(req,res) => {
     const {asset,type,qty,leverage,userId} = req.body;
-    try {    
+    try {
+            
         await redis.xAdd('EX-EN', '*', {
             type: "openOrder",
             payload :JSON.stringify({
@@ -15,7 +16,9 @@ tradeRouter.post("/create",async(req,res) => {
                 leverage,
                 userId
             })
-        })    
+        })
+
+        
         const data = await redis.xRead({
             key: "EN-EX",
             id : "$"
@@ -26,12 +29,16 @@ tradeRouter.post("/create",async(req,res) => {
         if (data) {
             //@ts-ignore
             const message = data[0].messages[0].message;
+            const response = JSON.parse(message.payload).orderId;
             //@ts-ignore
-            if (message.type === "orderId") return res.json({orderId : JSON.parse(message.payload).orderId});
+            if (message.type === "orderId") {
+                if (response === "ERROR") throw new Error("Invalid balance")
+                else {return res.json({orderId : response});}
+            }
         } else throw new Error("didnt receive orderId from the redis stream");   
     } catch (err) {
         console.log(err);
-        return res.status(500).json("error while creating oder")
+        return res.status(500).json({message : "error while creating oder"})
     }   
     
 })
@@ -60,7 +67,7 @@ tradeRouter.post("/close",async(req,res) => {
         }
     } catch (err) {
         console.log(err);
-        return res.json({messsage : "error while closing order"})
+        return res.status(500).json({messsage : "error while closing order"})
     }
 
 })

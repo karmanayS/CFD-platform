@@ -4,7 +4,7 @@ import { redis } from "../redisClient";
 export const orderRouter = express.Router();
 
 orderRouter.get("/openOrders", async(req,res) => {
-    const {userId} = req.body;
+    const userId = req.query.userId;
     try {
         await redis.xAdd("EX-EN","*",{
             type : "getOpenOrders",

@@ -2,15 +2,10 @@ import { OpenOrders, Prices, User } from "../types";
 
 interface NewOrder {
     asset:string,
-    type: OrderType,
+    type: "long" | "short",
     qty:number,
     leverage:number,
     userId:string
-}
-
-enum OrderType {
-    long="long",
-    short="short"
 }
 
 export function createOrder(newOrder:NewOrder,users:User[],openOrders:OpenOrders[],prices:Prices[]) {
@@ -20,8 +15,12 @@ export function createOrder(newOrder:NewOrder,users:User[],openOrders:OpenOrders
             const leverage = newOrder.leverage;
 
             let margin;
-            newOrder.type === "long" ? margin = qty * ((prices.find(p => p.asset === newOrder.asset)?.askPrice!) / ((newOrder.asset === "BTC") ? 10000 : 1000000)) : 
-            margin = qty * ((prices.find(p => p.asset === newOrder.asset)?.bidPrice!) / ((newOrder.asset === "BTC") ? 10000 : 1000000))
+            if (newOrder.type === "long") {
+                margin = qty * ((prices.find(p => p.asset === newOrder.asset)?.askPrice!) / ((newOrder.asset === "BTC") ? 10000 : 1000000))
+            } else if (newOrder.type === "short") {
+                margin = qty * ((prices.find(p => p.asset === newOrder.asset)?.bidPrice!) / ((newOrder.asset === "BTC") ? 10000 : 1000000))
+            } else throw new Error("Invalid type of order");
+            
 
             const locked = margin * leverage;
 
@@ -33,7 +32,7 @@ export function createOrder(newOrder:NewOrder,users:User[],openOrders:OpenOrders
 
             for (let i = 0;i<users.length;i++) {
                 if (users[i].userId === newOrder.userId) {
-                    if (margin > users[i].balance.amount) throw new Error("invalid balance");
+                    if (margin > (users[i].balance.amount/100)) throw new Error("invalid balance");
                     
                     users[i].balance.amount -= Math.floor(margin * 100);
                     users[i].balance.margin = Math.floor(margin * 100);  
@@ -59,6 +58,7 @@ export function createOrder(newOrder:NewOrder,users:User[],openOrders:OpenOrders
         } else throw new Error("cant get new order from stream")
 
     } catch (error) {
-        return console.log(error);
+        console.log(error);
+        return "ERROR";
     }
 }

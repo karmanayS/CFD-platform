@@ -16,7 +16,7 @@ assetRouter.get("/",async(req,res) => {
             key: "EN-EX",
             id: "$"
         }, {
-            BLOCK: 5000, COUNT: 1 
+            BLOCK: 0 
         })
         if (data) {
             //@ts-ignore

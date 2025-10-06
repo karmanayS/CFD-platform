@@ -42,17 +42,18 @@ async function main() {
             if (!payload) return console.log("error payload doesnt exist");
             
             if(message.type === "openOrder") {
-                const orderId = createOrder(payload,users,openOrders,PRICES);
+                const response = createOrder(payload,users,openOrders,PRICES);  
                 await stream.xAdd("EN-EX","*",{
                     type : "orderId",
                     payload: JSON.stringify({
-                        orderId
+                        orderId: response
                     })
                 })
                 console.log(openOrders);
             }
             
             if(message.type === "closeOrder") {
+                //console.log(payload.userId,payload.orderId);
                 const status = closeOrder(payload.userId,payload.orderId,openOrders,users,PRICES);
                 await stream.xAdd("EN-EX","*",{
                     type : "closeOrderStatus",
@@ -88,6 +89,7 @@ async function main() {
                         orders.push(o);
                     }
                 })
+                console.log(orders);
                 await stream.xAdd("EN-EX", "*" ,{
                     type : "openOrders",
                     payload : JSON.stringify({
