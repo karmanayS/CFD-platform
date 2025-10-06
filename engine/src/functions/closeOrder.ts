@@ -29,16 +29,20 @@ export function closeOrder(userId:string,orderId:string,openOrders:OpenOrders[],
                         const index = openOrders.indexOf(order!)
                         openOrders.splice(index,1);
 
-                        console.log(openOrders);
+                        
                         break
                         // openOrders[i].type === "long" ? users[j].balance.amount += (openOrders[i].qty * ((prices.find(e => e.asset === openOrders[i].asset)?.bidPrice !)/((openOrders[i].asset === "BTC") ? 10000 : 1000000))) * 100 :
 
                         // users[j].balance.amount += (users[j].balance.locked - (openOrders[i].qty * ((prices.find(e => e.asset === openOrders[i].asset)?.askPrice !)/((openOrders[i].asset === "BTC") ? 10000 : 1000000))) * 100)
-                    }
+                    } else { throw new Error("userId doesnt match") };
                 }
-            }
+            } else { throw new Error("orderId doesnt match") }
             break
         }
+        console.log(openOrders);
         return "SUCCESS";
-    } catch (err) {return "FAILED"}    
+    } catch (err) {
+        console.log(err);
+        return "FAILED"
+    }    
 }

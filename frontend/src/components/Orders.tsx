@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react"
 import type { AssetPrice } from "../hooks/usePriceFeed";
+import toast, { Toaster } from 'react-hot-toast';
 
 interface OpenOrders {
     userId: string,
@@ -19,7 +20,7 @@ export const Orders = ({assetPrices}:{assetPrices:AssetPrice[]}) => {
     useEffect(() => {
         async function getData() {
             try {
-                const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/orders/openOrders`);
+                const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/orders/openOrders?userId=user1`);
                 setOpenOrders(response.data.openOrders);
             } catch (err) {
                 return console.log(err);
@@ -29,7 +30,7 @@ export const Orders = ({assetPrices}:{assetPrices:AssetPrice[]}) => {
     },[]) 
 
     return <div className="flex flex-col p-2" >
-        <div className="grid grid-cols-8 gap-6 font-semibold border-b pb-1" >
+        <div className="grid grid-cols-9 gap-5 font-semibold border-b pb-1" >
             <div className="text-sm" > Coin </div>
             <div className="text-sm" > Quantity </div>
             <div className="text-sm" > Position type </div>
@@ -38,11 +39,12 @@ export const Orders = ({assetPrices}:{assetPrices:AssetPrice[]}) => {
             <div className="text-sm" > PNL </div>
             <div className="text-sm" > Margin </div>
             <div className="text-sm" > Leverage </div>
+            <div> </div>
         </div>
 
         {
             openOrders.map((order) => {
-                return <div className="grid grid-cols-8 gap-6 py-1 border-b last:border-none" >
+                return <div className="grid grid-cols-9 gap-5 py-1 border-b last:border-none" >
                     <div className="text-sm" > {order.asset} </div>
                     <div className="text-sm" > {order.qty} </div>
                     <div className="text-sm" > {order.type} </div>
@@ -51,9 +53,11 @@ export const Orders = ({assetPrices}:{assetPrices:AssetPrice[]}) => {
                     <Pnl order={order} assetPrices={assetPrices} />
                     <div className="text-sm" > {order.margin} </div>
                     <div className="text-sm" > {order.leverage} </div>
+                    <CloseOrder orderId={order.orderId} userId={order.userId} />
                 </div>
             })
         }
+        <Toaster/>
     </div>
 }
 
@@ -61,13 +65,39 @@ export const Orders = ({assetPrices}:{assetPrices:AssetPrice[]}) => {
 
 const Pnl = ({order,assetPrices}:{order:OpenOrders,assetPrices:AssetPrice[]}) => {
     let pnl:number;
-    let entryPrice = (order.amount) / ( (order.qty) * (order.leverage) );
-
+    //let entryPrice = (order.amount) / ( (order.qty) * (order.leverage) );
+    
     if (order.type === "long") {
-        pnl = assetPrices.find(a => a.asset === order.asset)?.bidPrice ?? 0 - entryPrice
+        const sellingPrice = (assetPrices.find(a => a.asset === order.asset)?.bidPrice ?? 0) * (order.qty * order.leverage); // ==> unitary method not divison
+        pnl = sellingPrice - order.amount;
     } else {
-        pnl = entryPrice - (assetPrices.find(a => a.asset === order.asset)?.askPrice ?? 0 )
+        const buyingPrice = (assetPrices.find(a => a.asset === order.asset)?.askPrice ?? 0) * (order.qty * order.leverage) 
+        pnl = order.amount - buyingPrice;
+    }
+    
+    return <div className= {`text-sm ${ (pnl>=0) ? "text-green-500" : "text-red-500" }`}  > {(Math.abs(pnl)).toFixed(2)} </div>
+}
+
+
+const CloseOrder = ({orderId,userId}:{orderId:string,userId:string}) => {
+
+    async function onclickHandler() {
+        try {
+            const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/trade/close`,{
+                data: {
+                    orderId,
+                    userId
+                }
+            });
+            if (response.status !== 200) throw new Error("Couldnt close order");
+            toast.success("Closed order successfully")
+        } catch (err) {
+            toast.error("ERROR!: couldn't close order")
+            return console.log(err);
+        }
     }
 
-    return <div className= {`text-sm ${ (pnl>=0) ? "text-green-500" : "text-red-500" }`}  > {Math.abs(pnl)} </div>
+    return <div>
+        <button onClick={onclickHandler} className="text-center py-1 rounded-md bg-slate-700 hover:bg-slate-900" > Close position </button>
+    </div>
 }

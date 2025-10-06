@@ -18,7 +18,14 @@
 //userId is hardcoded in the frontend req , make the signup sgnin and user auth logic properly
 //check whether all the http routes are being used on the frontend
 //resend api key in github
-//fix supportedAssets route and understand why BLOCK:5000 , COUNT:1 works. supported assets is hard coded in frontend abhi 
+
+//fix supportedAssets route and understand why BLOCK:5000 , COUNT:1 works. Fix this for other routes also where u are using BLOCK:0. Ye beech beech me error deta hai beech me nahi kyunki wohi timing ka scene bnra hai ==> MAJOR ISSUE FIX THIS
+
+//supported assets is hard coded in frontend abhi 
+
+//when placing order,balance isnt being checked ie more than balance order is still being placed
+
+
 
 //OPTIMISATIONS:
 //instead of again and again writing the same queue reding logic for userId ,make a function for it if can be made
