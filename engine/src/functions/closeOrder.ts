@@ -1,7 +1,7 @@
-import { openOrders, users } from "../db";
+import { OpenOrders, User } from "../types";
 import { currentPrice } from "./currentPrice";
 
-export function closeOrder(orderId:string) {
+export function closeOrder(orderId:string,openOrders:OpenOrders[],users:User[]) {
     const order = openOrders.find(o => o.orderId === orderId);
     try {    
         if (order === undefined) throw new Error("couldnt find order");
@@ -27,9 +27,11 @@ export function closeOrder(orderId:string) {
                 }
             }
         })
-        
-        //remove order from openOrders
 
+        //remove order from openOrders
+        const index = openOrders.indexOf(order);
+        openOrders.splice(index,1);
+        return "Successfully closed order";
     } catch (err) {
         console.log(err);
         return "Error while closing order";

@@ -1,10 +1,10 @@
 import { createClient } from "redis";
 import { openOrders, PRICES, supportedAssets, users } from "./db";
 import { getUsdBalance } from "./functions/getUsdBalance";
-import { stream } from "./redisClient";
+import { stream } from "./streamClient";
 import { createOrder } from "./functions/openOrder";
 import { closeOrder } from "./functions/closeOrder";
-import liquidate from "./functions/liquidate";
+//import liquidate from "./functions/liquidate";
 import { OpenOrders } from "./types";
 
 const redis = createClient();
@@ -25,7 +25,7 @@ async function main() {
                     }
                 }
             })
-            if(openOrders.length > 0) liquidate(openOrders,PRICES,users);
+            //if(openOrders.length > 0) liquidate(openOrders,PRICES,users);
         })
 
         while (true) {
@@ -55,7 +55,7 @@ async function main() {
             
             if(message.type === "closeOrder") {
                 //console.log(payload.userId,payload.orderId);
-                const status = closeOrder(payload.userId);
+                const status = closeOrder(payload.orderId,openOrders,users);
                 await stream.xAdd("EN-EX","*",{
                     randomId: message.randomId,
                     type : "closeOrderStatus",

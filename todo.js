@@ -24,8 +24,11 @@
 //supported assets is hard coded in frontend abhi 
 
 //when placing order,balance isnt being checked ie more than balance order is still being placed
-
-
+// when creating class redis manager , the editor is lagging in all the laptops
+// conversion(ie division multiplication ) should be correct everywhere there is user balance involved
+//whether to also store margin by multiplyin it by 100, what is the significance of doing these multiplications
+//instead of doing if else for type checking of each element while creating order , use zod
+//check liquidate logic once
 
 //OPTIMISATIONS:
 //instead of again and again writing the same queue reding logic for userId ,make a function for it if can be made

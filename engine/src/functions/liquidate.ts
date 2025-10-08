@@ -19,7 +19,7 @@ export default function liquidate(openOrders:OpenOrders[],prices:Prices[],users:
                 for (const user of users) {
                     if (user.userId === userId) {
                         user.balance.margin = 0;
-                        user.balance.locked = 0;
+                        //user.balance.locked = 0;
                     } 
                 }
                 //remove from open orders
@@ -35,7 +35,7 @@ export default function liquidate(openOrders:OpenOrders[],prices:Prices[],users:
                 for (const user of users) {
                     if (user.userId === userId) {
                         user.balance.margin = 0;
-                        user.balance.locked = 0;
+                        //user.balance.locked = 0;
                     } 
                 }
                 //remove from open orders

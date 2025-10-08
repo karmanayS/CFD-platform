@@ -1,41 +1,50 @@
 import { createClient, RedisClientType } from "redis";
 
-// export const redis = createClient();
+export const redis = createClient();
 
-// async function redisConnect() {
-//     try {await redis.connect()}
-//     catch(err) {
-//         return console.log(err);
-//     }
-// }
-
-class RedisManager {
-    private static instance:RedisManager;
-    private redisClient:RedisClientType = createClient();
-
-    private constructor() {
-        this.redisClient.connect();
+async function redisConnect() {
+    try {await redis.connect()}
+    catch(err) {
+        return console.log(err);
     }
-
-    static getInstance() {
-        if(!this.instance) {
-            this.instance = new RedisManager;
-        }
-        return this.instance;
-    }
-
-    add(randomId,payload) {
-        this.redisClient.xAdd("EX-EN","*",{
-            
-        });
-    }
-
-
-
 }
 
+// interface Order {
+//     asset:string,
+//     type: "long" | "short",
+//     qty:number,
+//     leverage:number,
+//     userId:string
+// }
 
-const redis = RedisManager.getInstance();
+// class RedisManager {
+//     private static instance:RedisManager;
+//     private redisClient:RedisClientType = createClient();
 
+//     private constructor() {
+//         this.redisClient.connect();
+//     }
 
-//redisConnect();
+//     static getInstance() {
+//         if(!this.instance) {
+//             this.instance = new RedisManager;
+//         }
+//         return this.instance;
+//     }
+
+//     add(randomId:string,payload:Order,type:string) {
+//         this.redisClient.xAdd("EX-EN","*",{
+//             randomId,
+//             type,
+//             payload: JSON.stringify(payload)
+//         })
+//     }
+
+//     read() {
+
+//     }
+// } 
+
+// ==> THE CLASS MAKES THE EDITOR LAG IN ALL THE DEVICES NOT JUST MINE . WHY ?
+
+redisConnect();

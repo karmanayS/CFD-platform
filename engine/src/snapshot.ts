@@ -38,7 +38,7 @@ async function snapshot() {
 
 
         const values = users.map(user => {
-            return `(${user.userId},${user.balance.amount},${user.balance.margin},${user.balance.locked})`
+            return `(${user.userId},${user.balance.amount},${user.balance.margin})`
         }).join(',')
         await prisma.$executeRawUnsafe(`
             INSERT INTO "Balances" ("userId", "amount", "margin", "locked")
@@ -46,8 +46,7 @@ async function snapshot() {
             ON CONFLICT ("userId")
             DO UPDATE SET 
                 "amount" = EXCLUDED."amount",
-                "margin" = EXCLUDED."margin",
-                "locked" = EXCLUDED."locked";   
+                "margin" = EXCLUDED."margin",   
         `)
 
     } catch(err) {
