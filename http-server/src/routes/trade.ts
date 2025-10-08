@@ -9,8 +9,13 @@ tradeRouter.post("/create",async(req,res) => {
 
     while (true) {     
         try {
-            const response = await redis.xRevRange('EN-EX', '+', '-', {COUNT: 1}) || "0";
-            const lastId = response[0].id;
+            const response = await redis.xRevRange('EN-EX', '+', '-', {COUNT: 1});
+            let lastId;
+            if (response.length === 0) {
+                lastId = "0"
+            } else {
+                lastId = response[0].id
+            }
             
             await redis.xAdd('EX-EN', '*', {
                 randomId,
@@ -56,8 +61,13 @@ tradeRouter.post("/close",async(req,res) => {
     const randomId = crypto.randomUUID();
     while (true) {    
         try {
-            const response = await redis.xRevRange('EN-EX', '+', '-', {COUNT: 1}) || "0";
-            const lastId = response[0].id;
+            const response = await redis.xRevRange('EN-EX', '+', '-', {COUNT: 1});
+            let lastId;
+            if (response.length === 0) {
+                lastId = "0"
+            } else {
+                lastId = response[0].id
+            }
 
             await redis.xAdd("EX-EN",'*',{
                 randomId,
@@ -77,6 +87,7 @@ tradeRouter.post("/close",async(req,res) => {
                 const message = data[0].messages[0].message;
                 if (message.randomId !== randomId) continue;
                 const payload = JSON.parse(message.payload);
+                if (payload.status === "ERROR") throw new Error("couldnt close order on engine")
                 if (message.type === "closeOrderStatus") return res.json({status : payload.status});
             } else throw new Error("no data received from stream")
         } catch (err) {

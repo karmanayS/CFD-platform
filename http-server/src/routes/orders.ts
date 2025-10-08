@@ -8,8 +8,13 @@ orderRouter.get("/openOrders", async(req,res) => {
     const randomId = crypto.randomUUID()
     while (true) {    
         try {
-            const response = await redis.xRevRange('EN-EX', '+', '-', {COUNT: 1}) || "0";
-            const lastId = response[0].id;
+            const response = await redis.xRevRange('EN-EX', '+', '-', {COUNT: 1});
+            let lastId;
+            if (response.length === 0) {
+                lastId = "0"
+            } else {
+                lastId = response[0].id
+            }
             
             await redis.xAdd("EX-EN","*",{
                 randomId,

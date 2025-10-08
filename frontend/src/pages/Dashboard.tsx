@@ -3,13 +3,14 @@ import { PlaceOrder } from "../components/PlaceOrder"
 import { SupportedAssets } from "../components/SupportedAssets";
 import { usePriceFeed } from "../hooks/usePriceFeed";
 import { Orders } from "../components/Orders";
+import { Navbar } from "../components/Navbar";
 
 export const Dashboard = () => {
     const [asset,setAsset] = useState("BTC");
     const assetPrices = usePriceFeed();    
 
     return <div className="flex flex-col h-screen p-2">
-        <div className="p-4 w-full mb-4 text-center border" > NAVBAR </div>
+        <Navbar />
 
         <div className="flex flex-row w-full mb-4" >
             <div className="w-80 border mr-2" > <SupportedAssets assetPrices={assetPrices} /> </div>

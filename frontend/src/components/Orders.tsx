@@ -41,9 +41,9 @@ export const Orders = ({assetPrices}:{assetPrices:AssetPrice[]}) => {
             <div className="text-sm" > Leverage </div>
             <div> </div>
         </div>
-
-        {
-            openOrders.map((order) => {
+    
+        {   
+            (openOrders === undefined) ? <div></div> :  openOrders.map((order) => {
                 return <div className="grid grid-cols-9 gap-5 py-1 border-b last:border-none" >
                     <div className="text-sm" > {order.asset} </div>
                     <div className="text-sm" > {order.qty} </div>
@@ -53,7 +53,7 @@ export const Orders = ({assetPrices}:{assetPrices:AssetPrice[]}) => {
                     <Pnl order={order} assetPrices={assetPrices} />
                     <div className="text-sm" > {order.margin} </div>
                     <div className="text-sm" > {order.leverage} </div>
-                    <CloseOrder orderId={order.orderId} userId={order.userId} />
+                    <CloseOrder orderId={order.orderId} />
                 </div>
             })
         }
@@ -79,15 +79,12 @@ const Pnl = ({order,assetPrices}:{order:OpenOrders,assetPrices:AssetPrice[]}) =>
 }
 
 
-const CloseOrder = ({orderId,userId}:{orderId:string,userId:string}) => {
+const CloseOrder = ({orderId}:{orderId:string}) => {
 
     async function onclickHandler() {
         try {
             const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/trade/close`,{
-                data: {
-                    orderId,
-                    userId
-                }
+                orderId
             });
             if (response.status !== 200) throw new Error("Couldnt close order");
             toast.success("Closed order successfully")

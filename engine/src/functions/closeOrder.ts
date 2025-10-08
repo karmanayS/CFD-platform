@@ -34,7 +34,7 @@ export function closeOrder(orderId:string,openOrders:OpenOrders[],users:User[]) 
         return "Successfully closed order";
     } catch (err) {
         console.log(err);
-        return "Error while closing order";
+        return "ERROR";
     }
     
 }
