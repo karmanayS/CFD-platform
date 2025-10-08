@@ -1,4 +1,5 @@
 import { OpenOrders, Prices, User } from "../types";
+import { currentPrice } from "./currentPrice";
 
 interface NewOrder {
     asset:string,
@@ -16,32 +17,40 @@ export function createOrder(newOrder:NewOrder,users:User[],openOrders:OpenOrders
 
             let margin;
             if (newOrder.type === "long") {
-                margin = qty * ((prices.find(p => p.asset === newOrder.asset)?.askPrice!) / ((newOrder.asset === "BTC") ? 10000 : 1000000))
+                const askPrice = currentPrice(newOrder.asset,"ask");
+                if (typeof(askPrice) !== "number") return askPrice;
+                margin = qty * askPrice; 
             } else if (newOrder.type === "short") {
-                margin = qty * ((prices.find(p => p.asset === newOrder.asset)?.bidPrice!) / ((newOrder.asset === "BTC") ? 10000 : 1000000))
+                const bidPrice = currentPrice(newOrder.asset,"bid");
+                if (typeof(bidPrice) !== "number") return bidPrice;
+                margin = qty * bidPrice;
             } else throw new Error("Invalid type of order");
-            
 
-            const locked = margin * leverage;
-
-            // let orderAmount:number;
-            
-            // newOrder.type === "long" ? orderAmount = (newOrder.qty * ((prices.find(e => e.asset === newOrder.asset)?.askPrice !) / ((newOrder.asset === "BTC") ? 10000 : 1000000))) :
-            
-            // orderAmount = (newOrder.qty * ((prices.find(e => e.asset === newOrder.asset)?.bidPrice !) / ((newOrder.asset === "BTC") ? 10000 : 1000000)));
-
-            for (let i = 0;i<users.length;i++) {
-                if (users[i].userId === newOrder.userId) {
-                    if (margin > (users[i].balance.amount/100)) throw new Error("invalid balance");
+            //update user balance
+            // for (let i = 0;i<users.length;i++) {
+            //     if (users[i].userId === newOrder.userId) {
+            //         if (margin > (users[i].balance.amount/100)) throw new Error("invalid balance");
                     
-                    users[i].balance.amount -= Math.floor(margin * 100);
-                    users[i].balance.margin = Math.floor(margin * 100);  
-                    users[i].balance.locked = Math.floor(locked * 100);
-                    // newOrder.type === "long" ? users[i].balance.amount -= Math.floor(margin * 100) : 
-                    // users[i].balance.locked += Math.floor(margin * 100) 
-                    break 
+            //         users[i].balance.amount -= Math.floor(margin * 100);
+            //         users[i].balance.margin = Math.floor(margin * 100);  
+            //         break 
+            //     }
+            // }
+            users.map((user) => {
+                if (user.userId === newOrder.userId) {
+                    if (margin > (user.balance.amount/100)) throw new Error("invalid balance");
+                    if (newOrder.type === "long") {
+                        user.balance.amount -= Math.round(margin) * 100
+                        user.balance.margin = Math.round(margin) * 100
+                        return
+                    } else if (newOrder.type === "short") {
+                        //here we dont decrease user balance because we are shorting so , we are getting money
+                        //but make sure then when closing order that u dont add this margin to the balance and just add the pnl
+                        user.balance.margin = Math.round(margin) * 100
+                        return
+                    }
                 }
-            }
+            })
             const orderId = crypto.randomUUID();
             openOrders.push({
                 userId: newOrder.userId,
@@ -51,9 +60,8 @@ export function createOrder(newOrder:NewOrder,users:User[],openOrders:OpenOrders
                 qty,
                 leverage,
                 margin, 
-                amount : locked,
+                amount : margin * leverage,
             })
-            // console.log(openOrders.find(o => o.orderId === orderId));
             return orderId;
         } else throw new Error("cant get new order from stream")
 

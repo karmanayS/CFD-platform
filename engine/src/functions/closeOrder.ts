@@ -1,48 +1,39 @@
-import { OpenOrders, Prices, User } from "../types";
+import { openOrders, users } from "../db";
+import { currentPrice } from "./currentPrice";
 
-export function closeOrder(userId:string,orderId:string,openOrders:OpenOrders[],users:User[],prices:Prices[]) {
+export function closeOrder(orderId:string) {
+    const order = openOrders.find(o => o.orderId === orderId);
     try {    
-        for (let i=0;i<openOrders.length;i++) {
-            if (openOrders[i].orderId === orderId) {
-                for (let j =0;j<users.length;j++) {
-                    if (users[j].userId === userId) {
-
-                        let closePrice = 0;
-
-                        if (openOrders[i].type === "long") {
-                            closePrice = (openOrders[i].qty * openOrders[i].leverage) * ((prices.find(p => p.asset === openOrders[i].asset)?.bidPrice!) / ((openOrders[i].asset === "BTC") ? 10000 : 1000000))
-                        } else if(openOrders[i].type === "short") {
-                            closePrice = (openOrders[i].qty * openOrders[i].leverage) * ((prices.find(p => p.asset === openOrders[i].asset)?.askPrice!) / ((openOrders[i].asset === "BTC") ? 10000 : 1000000))
-                        }
-
-                        if (openOrders[i].type === "long") {
-                            users[j].balance.locked = Math.floor(closePrice * 100) - users[j].balance.locked 
-                        } else if (openOrders[i].type === "short") {
-                            users[j].balance.locked -= Math.floor(closePrice * 100)
-                        }    
-                        users[j].balance.amount += users[j].balance.locked + users[j].balance.margin //you should subtract the margin amount from locked or else dont add margin here and just assign margin to be 0
-                        users[j].balance.locked = 0;
-                        users[j].balance.margin = 0; 
-                        
-                        //remove order from open orders
-                        const order = openOrders.find(o => o.orderId === orderId)
-                        const index = openOrders.indexOf(order!)
-                        openOrders.splice(index,1);
-
-                        
-                        break
-                        // openOrders[i].type === "long" ? users[j].balance.amount += (openOrders[i].qty * ((prices.find(e => e.asset === openOrders[i].asset)?.bidPrice !)/((openOrders[i].asset === "BTC") ? 10000 : 1000000))) * 100 :
-
-                        // users[j].balance.amount += (users[j].balance.locked - (openOrders[i].qty * ((prices.find(e => e.asset === openOrders[i].asset)?.askPrice !)/((openOrders[i].asset === "BTC") ? 10000 : 1000000))) * 100)
-                    } else { throw new Error("userId doesnt match") };
+        if (order === undefined) throw new Error("couldnt find order");
+        //update user balance
+        users.map((user) => {
+            if (user.userId === order.userId) {
+                if (order.type === "long") {
+                    const bidPrice = currentPrice(order.asset,"bid");
+                    if (typeof(bidPrice) !== "number") return bidPrice;
+                    const sellingPrice = (order.qty * order.leverage) * bidPrice;
+                    const pnl = sellingPrice - order.amount;
+                    user.balance.margin -= Math.round(order.margin) * 100;
+                    user.balance.amount += (Math.round(order.margin) + (pnl)) * 100;
+                    return
+                } else if(order.type === "short") {
+                    const askPrice = currentPrice(order.asset,"ask");
+                    if (typeof(askPrice) !== "number") return askPrice;
+                    const buyingPrice = (order.qty * order.leverage) * askPrice;
+                    const pnl = order.amount - buyingPrice;
+                    user.balance.margin -= Math.round(order.margin) * 100;
+                    user.balance.amount += pnl * 100;
+                    return
                 }
-            } else { throw new Error("orderId doesnt match") }
-            break
-        }
-        console.log(openOrders);
-        return "SUCCESS";
+            }
+        })
+        
+        //remove order from openOrders
+
     } catch (err) {
         console.log(err);
-        return "FAILED"
-    }    
+        return "Error while closing order";
+    }
+    
 }
+

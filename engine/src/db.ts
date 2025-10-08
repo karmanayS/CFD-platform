@@ -17,7 +17,6 @@ export const users:User[] = [{
     balance: {
         amount :500000,
         margin : 0,
-        locked : 0
     }
 }];
 

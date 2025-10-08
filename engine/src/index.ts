@@ -44,6 +44,7 @@ async function main() {
             if(message.type === "openOrder") {
                 const response = createOrder(payload,users,openOrders,PRICES);  
                 await stream.xAdd("EN-EX","*",{
+                    randomId: message.randomId,
                     type : "orderId",
                     payload: JSON.stringify({
                         orderId: response
@@ -54,18 +55,21 @@ async function main() {
             
             if(message.type === "closeOrder") {
                 //console.log(payload.userId,payload.orderId);
-                const status = closeOrder(payload.userId,payload.orderId,openOrders,users,PRICES);
+                const status = closeOrder(payload.userId);
                 await stream.xAdd("EN-EX","*",{
+                    randomId: message.randomId,
                     type : "closeOrderStatus",
                     payload : JSON.stringify({
                         status
                     })
                 });
+                console.log(openOrders);
             }
 
             if(message.type === "usdBalance") {
                 const usdBalance = getUsdBalance(payload.userId,users);
                 await stream.xAdd("EN-EX","*",{
+                    randomId: message.randomId,
                     type: "usdBalance",
                     payload : JSON.stringify({
                         usdBalance
@@ -75,6 +79,7 @@ async function main() {
 
             if(message.type === "supportedAssets") {
                 await stream.xAdd("EN-EX","*",{
+                    randomId: message.randomId,
                     type: "supportedAssets",
                     payload: JSON.stringify({
                         supportedAssets
@@ -91,6 +96,7 @@ async function main() {
                 })
                 console.log(orders);
                 await stream.xAdd("EN-EX", "*" ,{
+                    randomId: message.randomId,
                     type : "openOrders",
                     payload : JSON.stringify({
                         openOrders: orders

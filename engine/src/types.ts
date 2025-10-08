@@ -10,7 +10,6 @@ export interface User {
     balance : {
         amount : number,
         margin:number,
-        locked : number //contains leverage money from the exchange
     }
 }
 
