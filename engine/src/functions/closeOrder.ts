@@ -22,7 +22,7 @@ export function closeOrder(orderId:string,openOrders:OpenOrders[],users:User[]) 
                     const buyingPrice = (order.qty * order.leverage) * askPrice;
                     const pnl = order.amount - buyingPrice;
                     user.balance.margin -= Math.round(order.margin) * 100;
-                    user.balance.amount += pnl * 100;
+                    user.balance.amount += (Math.round(order.margin) + (pnl)) * 100;
                     return
                 }
             }

@@ -27,15 +27,6 @@ export function createOrder(newOrder:NewOrder,users:User[],openOrders:OpenOrders
             } else throw new Error("Invalid type of order");
 
             //update user balance
-            // for (let i = 0;i<users.length;i++) {
-            //     if (users[i].userId === newOrder.userId) {
-            //         if (margin > (users[i].balance.amount/100)) throw new Error("invalid balance");
-                    
-            //         users[i].balance.amount -= Math.floor(margin * 100);
-            //         users[i].balance.margin = Math.floor(margin * 100);  
-            //         break 
-            //     }
-            // }
             users.map((user) => {
                 if (user.userId === newOrder.userId) {
                     if (margin > (user.balance.amount/100)) throw new Error("invalid balance");
@@ -46,6 +37,7 @@ export function createOrder(newOrder:NewOrder,users:User[],openOrders:OpenOrders
                     } else if (newOrder.type === "short") {
                         //here we dont decrease user balance because we are shorting so , we are getting money
                         //but make sure then when closing order that u dont add this margin to the balance and just add the pnl
+                        user.balance.amount -= Math.round(margin) * 100 
                         user.balance.margin = Math.round(margin) * 100
                         return
                     }
