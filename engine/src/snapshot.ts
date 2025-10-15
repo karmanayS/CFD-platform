@@ -40,6 +40,7 @@ async function snapshot() {
         const values = users.map(user => {
             return `(${user.userId},${user.balance.amount},${user.balance.margin})`
         }).join(',')
+        
         await prisma.$executeRawUnsafe(`
             INSERT INTO "Balances" ("userId", "amount", "margin", "locked")
             VALUES ${values}

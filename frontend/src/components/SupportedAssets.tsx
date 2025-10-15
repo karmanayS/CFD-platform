@@ -40,7 +40,7 @@ export const SupportedAssets = ({assetPrices}:{assetPrices:AssetPrice[]}) => {
           const askPrice = assetPrices.find((e) => e.asset === a.symbol)?.askPrice?.toFixed(2);
 
           return (
-            <div className="grid grid-cols-4 gap-4 py-1 border-b last:border-none">
+            <div key={a.name} className="grid grid-cols-4 gap-4 py-1 border-b last:border-none">
               <div className="text-sm">{a.name}</div>
               <div className="text-sm">{a.symbol}</div>
               <div className="text-sm">{bidPrice}</div>
