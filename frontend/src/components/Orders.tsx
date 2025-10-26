@@ -1,32 +1,18 @@
 import axios from "axios";
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import type { AssetPrice } from "../hooks/usePriceFeed";
 import toast, { Toaster } from 'react-hot-toast';
-
-interface OpenOrders {
-    userId: string,
-    orderId : string,
-    asset : string,
-    type : "long" | "short",
-    qty: number,
-    leverage : number,
-    amount:number,
-    margin: number
-}
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "../redux/store";
+import { fetchOpenOrders, type OpenOrders } from "../redux/slices/openOrderSlice";
+import { fetchBalance } from "../redux/slices/balanceSlice";
 
 export const Orders = ({assetPrices}:{assetPrices:AssetPrice[]}) => {
-    const [openOrders,setOpenOrders] = useState< OpenOrders[] >([]);
+    const { openOrders,loading,error } = useSelector((state:RootState) => state.openOrders)
+    const dispatch = useDispatch<AppDispatch>()
 
     useEffect(() => {
-        async function getData() {
-            try {
-                const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/orders/openOrders?userId=user1`);
-                setOpenOrders(response.data.openOrders);
-            } catch (err) {
-                return console.log(err);
-            }    
-        }
-        getData();
+        dispatch(fetchOpenOrders())
     },[]) 
 
     return <div className="flex flex-col p-2" >
@@ -43,15 +29,15 @@ export const Orders = ({assetPrices}:{assetPrices:AssetPrice[]}) => {
         </div>
     
         {   
-            (openOrders === undefined) ? <div></div> :  openOrders.map((order) => {
-                return <div className="grid grid-cols-9 gap-5 py-1 border-b last:border-none" >
+            (loading) ? <div> Loading... </div> : (error) ? <div> Error fetching orders </div> : openOrders.map((order) => {
+                return <div key={order.orderId} className="grid grid-cols-9 gap-5 py-1 border-b last:border-none" >
                     <div className="text-sm" > {order.asset} </div>
                     <div className="text-sm" > {order.qty} </div>
                     <div className="text-sm" > {order.type} </div>
-                    <div className="text-sm" > {order.amount} </div>
-                    <div className="text-sm" > {(order.amount) / ( (order.qty) * (order.leverage) )} </div>
+                    <div className="text-sm" > {order.amount.toFixed(2)} </div>
+                    <div className="text-sm" > {((order.amount) / ( (order.qty) * (order.leverage) )).toFixed(2)} </div>
                     <Pnl order={order} assetPrices={assetPrices} />
-                    <div className="text-sm" > {order.margin} </div>
+                    <div className="text-sm" > {order.margin.toFixed(2)} </div>
                     <div className="text-sm" > {order.leverage} </div>
                     <CloseOrder orderId={order.orderId} />
                 </div>
@@ -80,6 +66,7 @@ const Pnl = ({order,assetPrices}:{order:OpenOrders,assetPrices:AssetPrice[]}) =>
 
 
 const CloseOrder = ({orderId}:{orderId:string}) => {
+    const dispatch = useDispatch<AppDispatch>()
 
     async function onclickHandler() {
         try {
@@ -88,6 +75,8 @@ const CloseOrder = ({orderId}:{orderId:string}) => {
             });
             if (response.status !== 200) throw new Error("Couldnt close order");
             toast.success("Closed order successfully")
+            dispatch(fetchBalance())
+            dispatch(fetchOpenOrders())
         } catch (err) {
             toast.error("ERROR!: couldn't close order")
             return console.log(err);

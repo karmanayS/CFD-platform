@@ -1,1 +1,1 @@
-{"root":["./src/index.ts","./src/redisclient.ts","./src/middlewares/authmiddleware.ts","./src/routes/balance.ts","./src/routes/orders.ts","./src/routes/signin.ts","./src/routes/signup.ts","./src/routes/supportedassets.ts","./src/routes/trade.ts"],"version":"5.9.2"}
+{"root":["./src/index.ts","./src/redisClient.ts","./src/middlewares/authMiddleware.ts","./src/routes/balance.ts","./src/routes/klineRouter.ts","./src/routes/orders.ts","./src/routes/signin.ts","./src/routes/signup.ts","./src/routes/supportedAssets.ts","./src/routes/trade.ts"],"version":"5.9.3"}

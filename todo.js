@@ -32,6 +32,7 @@
 
 //OPTIMISATIONS:
 //instead of again and again writing the same queue reding logic for userId ,make a function for it if can be made
+//loading...  where we are asynchronously fetching state . suspense /lazyloading
 
 //IMPORTANT
 //there is no selling actually going on under the hood we are just buying at askPrice or bidPrice.

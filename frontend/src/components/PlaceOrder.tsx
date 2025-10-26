@@ -3,11 +3,16 @@ import { OrderValue } from "./OrderValue";
 import type { AssetPrice } from "../hooks/usePriceFeed";
 import axios from "axios";
 import toast, { Toaster } from 'react-hot-toast';
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "../redux/store";
+import { fetchBalance } from "../redux/slices/balanceSlice";
+import { fetchOpenOrders } from "../redux/slices/openOrderSlice";
 
 export const PlaceOrder = ({asset,assetPrices}:{asset:string,assetPrices:AssetPrice[]}) => {
     const [orderType,setOrderType] = useState("long");
     const [qty,setQty] = useState(0);
     const [leverage,setLeverage] = useState(1);
+    const dispatch = useDispatch<AppDispatch>()
 
     async function placeOrder() {
         const body = {
@@ -53,7 +58,11 @@ export const PlaceOrder = ({asset,assetPrices}:{asset:string,assetPrices:AssetPr
             </div>
         </div>
 
-        <button onClick={placeOrder} className="py-1 text-center mt-4 bg-slate-600 hover:bg-slate-800 rounded-md text-sm" > Place Order </button>
+        <button onClick={async() => {
+            await placeOrder();
+            dispatch(fetchBalance())
+            dispatch(fetchOpenOrders())
+        }} className="py-1 text-center mt-4 bg-slate-600 hover:bg-slate-800 rounded-md text-sm" > Place Order </button>
         <Toaster />
     </div>
 }

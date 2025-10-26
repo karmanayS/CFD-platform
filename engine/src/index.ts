@@ -94,7 +94,6 @@ async function main() {
                         orders.push(o);
                     }
                 })
-                console.log(orders);
                 await stream.xAdd("EN-EX", "*" ,{
                     randomId: message.randomId,
                     type : "openOrders",

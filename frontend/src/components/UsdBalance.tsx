@@ -1,25 +1,23 @@
-import axios from "axios";
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import type { AppDispatch, RootState } from "../redux/store"
+import { fetchBalance } from "../redux/slices/balanceSlice"
 
 
 export const UsdBalance = () => {
-    const [balance,setBalance] = useState(0);
+    // const [balance,setBalance] = useState(0);
+    const {value,loading,error} = useSelector((state:RootState) => state.balance)
+    const dispatch = useDispatch<AppDispatch>()
 
     useEffect(() => {
-        async function getBalance() {
-            try {
-                const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/balance/usd?userId=user1`)
-                const balance = parseFloat(response.data.usdBalance);
-                setBalance(balance);
-            } catch(err) {
-                console.log(err);
-                return
-            }
-        }
-        getBalance()
+        dispatch(fetchBalance())
     },[])
 
-    return <div className="rounded p-2 text-lg bg-slate-600" >
-        Balance: {balance.toFixed(2)}
-    </div>
+    if (loading) <div> Loading... </div>
+    else if (error) <div> Error </div>
+    else {
+        return <div className="rounded p-2 text-lg bg-slate-600" >
+            Balance: {value.toFixed(2)}
+        </div>
+    }
 }

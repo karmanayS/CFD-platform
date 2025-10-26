@@ -4,6 +4,7 @@ import { SupportedAssets } from "../components/SupportedAssets";
 import { usePriceFeed } from "../hooks/usePriceFeed";
 import { Orders } from "../components/Orders";
 import { Navbar } from "../components/Navbar";
+import { Chart } from "../components/Chart";
 
 export const Dashboard = () => {
     const [asset,setAsset] = useState("BTC");
@@ -24,7 +25,7 @@ export const Dashboard = () => {
                         </select>
                     </form>
                </div>
-               <div> CHART </div>  
+               <Chart asset={asset} /> 
             </div>
 
             <div className="w-60" > <PlaceOrder assetPrices={assetPrices} asset={asset} /> </div>
