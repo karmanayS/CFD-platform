@@ -4,7 +4,7 @@ import { getUsdBalance } from "./functions/getUsdBalance";
 import { stream } from "./streamClient";
 import { createOrder } from "./functions/openOrder";
 import { closeOrder } from "./functions/closeOrder";
-//import liquidate from "./functions/liquidate";
+import liquidate from "./functions/liquidate";
 import { OpenOrders } from "./types";
 
 const redis = createClient();

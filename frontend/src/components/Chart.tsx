@@ -1,4 +1,4 @@
-import { CandlestickSeries, createChart } from "lightweight-charts";
+import { CandlestickSeries, ColorType, createChart } from "lightweight-charts";
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
@@ -16,11 +16,37 @@ interface Kline {
 
 export const Chart = React.memo(({ asset }: { asset: string }) => {
   const chartRef = useRef<HTMLDivElement>(null);
-  const [time,setTime] = useState("1m")
-    
+  const [time, setTime] = useState("1m");
+
   useEffect(() => {
     if (!chartRef.current) return;
-    const chart = createChart(chartRef.current);
+    const chart = createChart(chartRef.current, {
+      width: chartRef.current.clientWidth,
+      height: chartRef.current.clientHeight,
+      layout: {
+        background: { type: ColorType.Solid, color: "rgba(0,0,0,0)" }, // fully transparent
+        textColor: "#E0E0E0",
+      },
+      grid: {
+        vertLines: { color: "rgba(255,255,255,0.05)" },
+        horzLines: { color: "rgba(255,255,255,0.05)" },
+      },
+      crosshair: {
+        mode: 1,
+        vertLine: {
+          color: "rgba(0, 255, 255, 0.5)",
+          width: 1,
+          style: 0,
+        },
+        horzLine: {
+          color: "rgba(0, 255, 255, 0.5)",
+          width: 1,
+          style: 0,
+        },
+      },
+      timeScale: { borderColor: "rgba(255,255,255,0.1)" },
+      rightPriceScale: { borderColor: "rgba(255,255,255,0.1)" },
+    });
     const candlestickSeries = chart.addSeries(CandlestickSeries);
 
     async function getData() {
@@ -28,7 +54,10 @@ export const Chart = React.memo(({ asset }: { asset: string }) => {
         const response = await axios.get(
           `${
             import.meta.env.VITE_API_BASE_URL
-          }/klines?symbol=${asset}_USDC&interval=${time}&startTime=${((Date.now()/1000) - 80000).toFixed(0)}`
+          }/klines?symbol=${asset}_USDC&interval=${time}&startTime=${(
+            Date.now() / 1000 -
+            80000
+          ).toFixed(0)}`
         );
 
         const formattedData = response.data.data.map((item: Kline) => ({
@@ -47,39 +76,34 @@ export const Chart = React.memo(({ asset }: { asset: string }) => {
     getData();
     chart.timeScale().fitContent();
 
-    return () => chart.remove()
-  }, [time,asset]);
+    return () => chart.remove();
+  }, [time, asset]);
 
   return (
-    <div className="flex flex-col w-full h-full ">
-      <form className="w-36">
+    <div className="flex flex-col w-full h-full">
+      
+      <form className="w-36 mb-3">
         <select
           defaultValue="1m"
-          className="block w-full text-xs focus:outline-none mb-3 border border-gray-300 rounded p-1 overflow-y-auto"
           onChange={(e) => setTime(e.target.value)}
+          className="block w-full text-sm px-3 py-2 rounded-xl bg-transparent border border-transparent text-gray-200 focus:outline-none focus:ring-offset-0 transition cursor-pointer"
         >
-          <optgroup label="Minutes">
+          <optgroup label="Minutes" className="bg-gray-800 text-gray-100">
             <option value="1m">1m</option>
             <option value="5m">5m</option>
             <option value="15m">15m</option>
             <option value="30m">30m</option>
           </optgroup>
-
-          <optgroup label="Hours">
+          <optgroup label="Hours" className="bg-gray-800 text-gray-100">
             <option value="1h">1h</option>
             <option value="4h">4h</option>
             <option value="12h">12h</option>
           </optgroup>
-
-          {/* <optgroup label="Days">
-            <option value="1d">1d</option>
-            <option value="7d">7d</option>
-            <option value="1month">1 month</option>
-          </optgroup> */}
         </select>
       </form>
 
-      <div ref={chartRef} className="w-full h-full" ></div>
+      
+      <div ref={chartRef} className="flex-1 w-full h-full" />
     </div>
   );
 });

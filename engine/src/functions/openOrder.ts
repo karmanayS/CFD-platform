@@ -32,13 +32,13 @@ export function createOrder(newOrder:NewOrder,users:User[],openOrders:OpenOrders
                     if (margin > (user.balance.amount/100)) throw new Error("invalid balance");
                     if (newOrder.type === "long") {
                         user.balance.amount -= Math.round(margin) * 100
-                        user.balance.margin = Math.round(margin) * 100
+                        user.balance.margin += Math.round(margin) * 100
                         return
                     } else if (newOrder.type === "short") {
                         //here we dont decrease user balance because we are shorting so , we are getting money
                         //but make sure then when closing order that u dont add this margin to the balance and just add the pnl
-                        user.balance.amount -= Math.round(margin) * 100 
-                        user.balance.margin = Math.round(margin) * 100
+                        //user.balance.amount -= Math.round(margin) * 100 
+                        user.balance.margin += Math.round(margin) * 100
                         return
                     }
                 }
