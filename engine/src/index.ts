@@ -40,6 +40,32 @@ async function main() {
             const message = data[0].messages[0].message;
             const payload = JSON.parse(message.payload)
             if (!payload) return console.log("error payload doesnt exist");
+
+            if (message.type === "signUp") {
+                users.push({
+                    userId: payload.email,
+                    balance: {
+                        amount: 500000,
+                        margin: 0
+                    }
+                })
+                await stream.xAdd("EN-EX", "*", {
+                    randomId : message.randomId,
+                    success: true
+                })
+            }
+
+            if (message.type === "signIn") {
+                const existingUser = users.find((user) => user.userId === payload.email)
+                let success = true;
+                if (!existingUser) {
+                    success = false
+                }
+                await stream.xAdd("EN-EX", "*" ,{
+                    randomId : message.randomId,
+                    success
+                })    
+            }
             
             if(message.type === "openOrder") {
                 const response = createOrder(payload,users,openOrders,PRICES);  

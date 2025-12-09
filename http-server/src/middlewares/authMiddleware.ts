@@ -1,10 +1,12 @@
-// import { NextFunction, Request, Response } from "express";
-// import jwt from "jsonwebtoken";
+import { NextFunction, Request, Response } from "express";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
-// export function authMiddlware(req:Request,res:Response,next:NextFunction) {
-//     const token  = req.cookies;
-//     const decoded = jwt.verify(token,process.env.JWT_SECRET as string)
-//     if (decoded) {
-//         req.user
-//     } else return console.error("Error verifying jwt")
-// }
+export function authMiddlware(req:Request,res:Response,next:NextFunction) {
+    const {token} = req.cookies;
+    const decoded = jwt.verify(token as string,process.env.JWT_SECRET as string) as JwtPayload
+    if (!decoded.email) return res.json({
+        success : false,
+        message : "Invalid auth token"
+    })
+    next()
+}

@@ -20,7 +20,9 @@
 //user auth 
 // dynamically generate the startTime for candles
 //liquidate runs in the engine , how to send that event to the frontend so the current open orders dont have the liquidated orders
-
+// fix : while loop ==> while loop should only be for xRead if the id we pushed doesnt match the id we received , it should not push the same thing again, it should just read again.
+// in xread if at the first try the randomId doesnt match then for the second try in the loop , again our lastId is same so we will receive the same element again but it may be that our element is the one after the element we are receiving but we will keep receiving the same element ie the one after lastId  
+// try catch in all redis functions
 
 //OPTIMISATIONS:
 //instead of again and again writing the same queue reding logic for userId ,make a function for it if can be made
