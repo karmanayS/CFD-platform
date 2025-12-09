@@ -1,10 +1,12 @@
 import express from "express";
 import { redis } from "../redisClient";
+import { authMiddlware } from "../middlewares/authMiddleware";
 
 const tradeRouter = express.Router();
 
-tradeRouter.post("/create",async(req,res) => {
-    const {asset,type,qty,leverage,userId} = req.body;
+tradeRouter.post("/create",authMiddlware,async(req,res) => {
+    const userId = req.userId
+    const {asset,type,qty,leverage} = req.body;
     const randomId = crypto.randomUUID();
 
     while (true) {     
@@ -56,7 +58,7 @@ tradeRouter.post("/create",async(req,res) => {
     
 })
 
-tradeRouter.post("/close",async(req,res) => {
+tradeRouter.post("/close",authMiddlware,async(req,res) => {
     const {orderId} = req.body;
     const randomId = crypto.randomUUID();
     while (true) {    

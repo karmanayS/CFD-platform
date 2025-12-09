@@ -8,5 +8,6 @@ export function authMiddlware(req:Request,res:Response,next:NextFunction) {
         success : false,
         message : "Invalid auth token"
     })
+    req.userId = decoded.email
     next()
 }

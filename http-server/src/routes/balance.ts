@@ -1,5 +1,6 @@
 import express from "express";
 import { redis } from "../redisClient";
+import { authMiddlware } from "../middlewares/authMiddleware";
 
 const balanceRouter = express.Router();
 
@@ -7,8 +8,8 @@ balanceRouter.get("/",async(req,res) => {
     const {userId} = req.body;
 })
 
-balanceRouter.get("/usd",async(req,res) => {
-    const userId = req.query.userId;
+balanceRouter.get("/usd",authMiddlware,async(req,res) => {
+    const userId = req.userId;
     const randomId = crypto.randomUUID();
     while (true) {    
         try {

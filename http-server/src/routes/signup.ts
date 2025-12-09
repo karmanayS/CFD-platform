@@ -48,8 +48,7 @@ signupRouter.post("/" , async(req,res) => {
                 //@ts-ignore
                 const message = data[0].messages[0].message;
                 if (message.randomId !== randomId) continue;
-                const payload = JSON.parse(message.payload);
-                if (!payload.success) return res.json({
+                if (message.success === "false") return res.json({
                     success: false,
                     message : "Couldnt signup please try again"
                 })

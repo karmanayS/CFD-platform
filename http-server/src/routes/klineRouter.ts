@@ -1,9 +1,10 @@
 import express from "express"
 import axios from "axios"
+import { authMiddlware } from "../middlewares/authMiddleware";
 
 export const klineRouter = express.Router()
 
-klineRouter.get('/',async (req,res) => {
+klineRouter.get('/',authMiddlware,async (req,res) => {
     const {symbol,interval,startTime} = req.query;
     try {
         const response = await axios.get(`https://api.backpack.exchange/api/v1/klines?symbol=${symbol}&interval=${interval}&startTime=${startTime}`)

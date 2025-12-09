@@ -1,5 +1,6 @@
 import express from "express";
 import { redis } from "../redisClient";
+import { authMiddlware } from "../middlewares/authMiddleware";
 
 const assetRouter = express.Router();
 
