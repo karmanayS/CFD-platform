@@ -1,5 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom"
 import { Dashboard } from "./pages/Dashboard"
+import { SignupPage } from "./pages/Signup"
+import { SigninPage } from "./pages/Signin"
 
 function App() {
 
@@ -8,6 +10,8 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/dashboard" element={ <Dashboard /> } />
+          <Route path="/signup" element={ <SignupPage /> } />
+          <Route path="/signin" element={ <SigninPage /> } />
         </Routes>
       </BrowserRouter>
     </div>
