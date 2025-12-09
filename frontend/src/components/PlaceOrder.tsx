@@ -25,8 +25,7 @@ export const PlaceOrder = ({
       asset,
       type: orderType,
       qty,
-      leverage,
-      userId: "user1",
+      leverage
     };
 
     try {

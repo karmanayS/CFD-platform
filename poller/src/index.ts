@@ -40,9 +40,9 @@ async function main() {
         }]
     };
 
-    backpackSocket.onmessage = (event) => {
+    backpackSocket.onmessage = async(event) => {
         const data = JSON.parse(event.data.toString())
-        if(data.data.s === "BTC_USDC") { 
+        if(data.data.s === "BTC_USDC") {
             for (let i = 0;i<ticks.price_updates.length;i++) {
                 if (ticks.price_updates[i].asset === "BTC") {
                     ticks.price_updates[i].price = parseFloat(data.data.a) * 10000
@@ -57,7 +57,7 @@ async function main() {
                 }
             }
         }
-        redis.publish("TICKS",JSON.stringify(ticks))
+        await redis.publish("TICKS",JSON.stringify(ticks))
     }
 
     backpackSocket.onclose = (event) => {

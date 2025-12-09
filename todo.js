@@ -29,7 +29,7 @@
 //loading...  where we are asynchronously fetching state . suspense /lazyloading 
 
 //IMPORTANT
-// You shouldnt decrease the user balance when selling which u are doing currently , on the frontend, th user balance should increase because they are selling maybe pu that increased balance in locked. But on the backend there is no selling actually going on under the hood we are just buying bidPrice.
+// You shouldnt decrease the user balance when selling which u are doing currently , on the frontend, th user balance should increase because they are selling maybe put that increased balance in locked. But on the backend there is no selling actually going on under the hood we are just buying bidPrice.
 //For the above case just add the margin section to the FE and when a sell order will be placed , the user balance wont be decreased but the margin will be increased and when the order will be closed , only the PNL will be added to the user balance and the margin will be completely subtracted and returned to the platform probably 
 
 //Also in a real application like this if we are trading against a platform then the platform balance should increase when the user balance decreases and vice versa

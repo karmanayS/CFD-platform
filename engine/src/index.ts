@@ -51,15 +51,15 @@ async function main() {
                 })
                 await stream.xAdd("EN-EX", "*", {
                     randomId : message.randomId,
-                    success: true
+                    success: "true"
                 })
             }
 
             if (message.type === "signIn") {
                 const existingUser = users.find((user) => user.userId === payload.email)
-                let success = true;
+                let success = "true";
                 if (!existingUser) {
-                    success = false
+                    success = "false"
                 }
                 await stream.xAdd("EN-EX", "*" ,{
                     randomId : message.randomId,

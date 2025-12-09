@@ -14,7 +14,7 @@ export const SupportedAssets = ({
   assetPrices: AssetPrice[];
 }) => {
   const [assets, setAssets] = useState<SupportedAssets[]>([]);
-
+  
   useEffect(() => {
     async function fetchData() {
       try {

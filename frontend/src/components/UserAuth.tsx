@@ -8,7 +8,7 @@ export function UserAuth({ isSignin }: { isSignin: boolean }) {
 
     return (
         <div className="flex justify-center items-center w-full min-h-screen p-6">
-            <div className="flex flex-col p-6 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-[0_8px_30px_rgba(0,0,0,0.3)] w-full max-w-sm">
+            <div className="flex flex-col p-6 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-[0_8px_30px_rgba(0,0,0,0.3)] w-full max-w-sm justify-center items-center">
                 
                 {/* Title */}
                 <h2 className="text-center text-xl font-semibold text-gray-100 mb-6 tracking-wide">
@@ -28,7 +28,9 @@ export function UserAuth({ isSignin }: { isSignin: boolean }) {
                     onClick={async () => {
                         let url:string;
                         (isSignin) ? url = "http://localhost:3000/api/v1/signin" : url = "http://localhost:3000/api/v1/signup"
-                        const response = await axios.post(url)
+                        const response = await axios.post(url, {
+                            email : emailRef.current
+                        })
                         if (!response.data.success) {
                             toast.error("ERROR: Please retry")
                             return
@@ -40,10 +42,9 @@ export function UserAuth({ isSignin }: { isSignin: boolean }) {
                     {isSignin ? "Sign in" : "Sign up"}
                 </button>
 
-                { (isSignin) ? <div> New user ? <Link to="/signup" >Signup</Link> </div> : <div> Already a member ? <Link to="/signin">Signin</Link> </div> }
-
-                <Toaster />
+                { (isSignin) ? <div> New user ? <Link to="/signup" >Signup</Link> </div> : <div> Already a member ? <Link className="underline" to="/signin">Signin</Link> </div> }
             </div>
+            <Toaster />
         </div>
     )
 }
