@@ -2,7 +2,9 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios"
 
 export const fetchBalance = createAsyncThunk("fetchBalance",async() => {
-    const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/balance/usd`)
+    const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/balance/usd`,{
+        withCredentials: true
+    })
     const balance = parseFloat(response.data.usdBalance.balance);
     return balance
 })

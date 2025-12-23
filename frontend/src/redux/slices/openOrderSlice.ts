@@ -25,7 +25,9 @@ const initialState: InitialState = {
 }
 
 export const fetchOpenOrders = createAsyncThunk("fetchOpenOrders",async() => {
-    const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/orders/openOrders`);
+    const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/orders/openOrders`,{
+        withCredentials: true
+    });
     return (response.data.openOrders)
 })
 

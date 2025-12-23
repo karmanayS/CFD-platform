@@ -42,7 +42,7 @@ export function UserAuth({ isSignin }: { isSignin: boolean }) {
                     {isSignin ? "Sign in" : "Sign up"}
                 </button>
 
-                { (isSignin) ? <div> New user ? <Link to="/signup" >Signup</Link> </div> : <div> Already a member ? <Link className="underline" to="/signin">Signin</Link> </div> }
+                { (isSignin) ? <div> New user ? <Link className="underline" to="/signup" >Signup</Link> </div> : <div> Already a member ? <Link className="underline" to="/signin">Signin</Link> </div> }
             </div>
             <Toaster />
         </div>

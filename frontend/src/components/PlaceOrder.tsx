@@ -31,7 +31,10 @@ export const PlaceOrder = ({
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_BASE_URL}/trade/create`,
-        body
+        body,
+        {
+          withCredentials: true
+        }
       );
       if (response.status !== 200) throw new Error("didnt receive orderId");
       toast.success("Placed order successfully");

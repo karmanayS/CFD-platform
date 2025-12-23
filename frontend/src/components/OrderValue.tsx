@@ -1,6 +1,6 @@
-import type { assetPrice } from "../hooks/usePriceFeed"
+import type { AssetPrice } from "../hooks/usePriceFeed"
 
-export const OrderValue = ({qty,leverage,asset,orderType,assetPrices}:{qty:number,leverage:number,asset:string,orderType:string,assetPrices:assetPrice[]}) => {
+export const OrderValue = ({qty,leverage,asset,orderType,assetPrices}:{qty:number,leverage:number,asset:string,orderType:string,assetPrices:AssetPrice[]}) => {
     if (asset === "BTC") {
         return <div>
             ${(qty * leverage * ((orderType === "BUY") ? assetPrices.find(e => e.asset === "BTC")?.askPrice! : assetPrices.find(e => e.asset === "BTC")?.bidPrice! )).toFixed(2)}

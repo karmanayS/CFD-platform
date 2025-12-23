@@ -7,7 +7,7 @@ import { redis } from "../redisClient"
 
 const resend = new Resend(process.env.RESEND_API_KEY ?? "");
 
-const signupRouter = express.Router();
+export const signupRouter = express.Router();
 
 signupRouter.post("/" , async(req,res) => {
     const {email} = req.body;
@@ -37,30 +37,26 @@ signupRouter.post("/" , async(req,res) => {
             })
         })
 
-        while (true) {
-            const data = await redis.xRead({
-                key: "EN-EX",
-                id: lastId
-            }, {
-                BLOCK:0
-            })
-            if(data) {
-                //@ts-ignore
-                const message = data[0].messages[0].message;
-                if (message.randomId !== randomId) continue;
-                if (message.success === "false") return res.json({
-                    success: false,
-                    message : "Couldnt signup please try again"
-                })
-                break;
-            } else {
-                return res.json({
-                    success: false,
-                    message: "Did not receive signup status from stream"
-                })
-            } 
-            
-        }
+        const allMessages = await redis.xRead({
+            key: "EN-EX",
+            id: lastId
+        }, {
+            BLOCK:0
+        })
+        if (!allMessages) return res.json({
+            success: false,
+            message: "Did not receive signup status from stream"
+        })
+        //@ts-ignore
+        const message = allMessages[0].messages.find((entry) => {
+            if (entry.message.randomId === randomId) {
+                return entry.message
+            }
+        })
+        if (message.success === "false") return res.json({
+            success: false,
+            message : "Couldnt signup please try again"
+        })
 
         const {data,error} = await resend.emails.send({
             from: 'onboarding@resend.dev',
@@ -84,5 +80,3 @@ signupRouter.post("/" , async(req,res) => {
         })
     }
 })
-
-export default signupRouter;

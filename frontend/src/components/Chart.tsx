@@ -58,7 +58,9 @@ export const Chart = React.memo(({ asset }: { asset: string }) => {
             Date.now() / 1000 -
             80000
           ).toFixed(0)}`
-        );
+        , {
+          withCredentials: true
+        });
 
         const formattedData = response.data.data.map((item: Kline) => ({
           time: Math.floor(new Date(item.start).getTime() / 1000), // seconds
