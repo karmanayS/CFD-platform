@@ -102,6 +102,8 @@ const CloseOrder = ({ orderId }: { orderId: string }) => {
         `${import.meta.env.VITE_API_BASE_URL}/trade/close`,
         {
           orderId,
+        }, {
+          withCredentials : true
         }
       );
       if (response.status !== 200) throw new Error("Couldnt close order");

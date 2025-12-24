@@ -50,7 +50,6 @@ async function main() {
                 const message = element.message
                 const payload = JSON.parse(message.payload)
                 if (!payload) return console.log("error payload doesnt exist");
-                console.log("MESSAGE : ",message)
                 
                 if (message.type === "signUp") {
                     users.push({
@@ -91,7 +90,6 @@ async function main() {
                 }
                 
                 if(message.type === "closeOrder") {
-                    //console.log(payload.userId,payload.orderId);
                     const status = closeOrder(payload.orderId,openOrders,users);
                     await stream.xAdd("EN-EX","*",{
                         randomId: message.randomId,
@@ -114,7 +112,6 @@ async function main() {
                 }
 
                 if(message.type === "supportedAssets") {
-                    console.log("in supported")
                     await stream.xAdd("EN-EX","*",{
                         randomId: message.randomId,
                         payload: JSON.stringify({

@@ -4,7 +4,7 @@ import { SupportedAssets } from "../components/SupportedAssets";
 import { usePriceFeed } from "../hooks/usePriceFeed";
 import { Orders } from "../components/Orders";
 import { Navbar } from "../components/Navbar";
-import { Chart } from "../components/Chart";
+//import { Chart } from "../components/Chart";
 import { Toaster } from "react-hot-toast";
 
 export const Dashboard = () => {
@@ -38,7 +38,8 @@ export const Dashboard = () => {
 
           {/* Chart */}
           <div className="flex-1 rounded-xl overflow-hidden">
-            <Chart asset={asset} />
+            {/*<Chart asset={asset} />*/}
+            Chart will be here
           </div>
         </div>
 

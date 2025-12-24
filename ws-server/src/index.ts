@@ -14,6 +14,8 @@ async function main() {
                 ws.send(message);
             })        
         })
+
+        console.log("WS server running on port 8080")
     } catch (err) {
         console.log(err);
         return 
