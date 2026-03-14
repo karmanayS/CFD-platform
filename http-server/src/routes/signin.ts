@@ -13,7 +13,7 @@ signinRouter.post("/", async(req,res) => {
     const {email} = req.body;
     const parsedEmail = z.email().safeParse(email)
     if (!parsedEmail.success) return res.json({success: false, message: "Invalid user input"})
-    const token = jwt.sign({email: parsedEmail.data},process.env.JWT_SECRET as string);
+    const token = jwt.sign({email: parsedEmail.data},process.env.JWT_SECRET as string, { expiresIn: "7d" });
     
     // check for user in engine
     try {
