@@ -35,11 +35,7 @@ assetRouter.get("/",async(req,res) => {
             message: "Did not receive supported assets from engine"
         })
         //@ts-ignore
-        const message = allMessages[0].messages.find((entry) => {
-            if (entry.message.randomId === randomId) {      
-                return entry.message
-            }
-        })
+        const message = allMessages[0].messages.find(entry => entry.message.randomId === randomId)
         if (!message) return res.json({
             success: false,
             message : "Couldn't fetch supported assets"

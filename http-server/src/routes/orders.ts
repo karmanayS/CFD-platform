@@ -36,11 +36,7 @@ orderRouter.get("/openOrders",authMiddlware,async(req,res) => {
             message: "Did not receive open orders from engine"
         })
         //@ts-ignore
-        const message = allMessages[0].messages.find((entry) => {
-            if (entry.message.randomId === randomId) {      
-                return entry.message
-            }
-        })
+        const message = allMessages[0].messages.find(entry => entry.message.randomId === randomId)
         if (!message) return res.json({
             success: false,
             message : "Couldn't fetch open orders"

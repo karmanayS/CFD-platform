@@ -48,11 +48,7 @@ signupRouter.post("/" , async(req,res) => {
             message: "Did not receive signup status from stream"
         })
         //@ts-ignore
-        const message = allMessages[0].messages.find((entry) => {
-            if (entry.message.randomId === randomId) {
-                return entry.message
-            }
-        })
+        const message = allMessages[0].messages.find(entry => entry.message.randomId === randomId)
         if (message.success === "false") return res.json({
             success: false,
             message : "Couldnt signup please try again or login"
