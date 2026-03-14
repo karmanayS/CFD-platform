@@ -5,12 +5,22 @@ interface Ticks {
     price_updates : {asset:string,price:number,decimal:number}[]
 };
 
-const backpackSocket = new WebSocket("wss://ws.backpack.exchange");
 const redis = createClient();
 
-async function main() {
-    try {await redis.connect();}
-    catch (err) { return console.log(err)};
+const ticks:Ticks = {
+    price_updates: [{
+        asset : "BTC",
+        price: 0,
+        decimal: 4
+    }, {
+        asset : "SOL",
+        price: 0,
+        decimal: 6
+    }]
+};
+
+function connectToBackpack() {
+    const backpackSocket = new WebSocket("wss://ws.backpack.exchange");
 
     backpackSocket.onopen = () => {
         console.log("connected to backpack server...");
@@ -27,18 +37,6 @@ async function main() {
         //     "params": ["bookTicker.ETH_USDC"]
         // }))
     }
-
-    const ticks:Ticks = {
-        price_updates: [{
-            asset : "BTC",
-            price: 0,
-            decimal: 4
-        }, {
-            asset : "SOL",
-            price: 0,
-            decimal: 6
-        }]
-    };
 
     backpackSocket.onmessage = async(event) => {
         const data = JSON.parse(event.data.toString())
@@ -60,13 +58,22 @@ async function main() {
         await redis.publish("TICKS",JSON.stringify(ticks))
     }
 
-    backpackSocket.onclose = (event) => {
-        console.log("connection to backpack server closed",event);
+    backpackSocket.onclose = () => {
+        console.log("connection to backpack server closed, reconnecting in 3s...");
+        setTimeout(connectToBackpack, 3000);
     }
 
-    backpackSocket.ping = () => {
-        backpackSocket.pong()
+    backpackSocket.onerror = (err) => {
+        console.log("backpack ws error:", err);
+        backpackSocket.close();
     }
-}    
+}
+
+async function main() {
+    try {await redis.connect();}
+    catch (err) { return console.log(err)};
+
+    connectToBackpack();
+}
 
 main();

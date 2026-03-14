@@ -15,7 +15,7 @@ export function authMiddlware(req:Request,res:Response,next:NextFunction) {
         console.log(err)
         return res.status(500).json({
             success : false,
-            messsage : "Error while authenticating user"
+            message : "Error while authenticating user"
         })
     }    
 }
