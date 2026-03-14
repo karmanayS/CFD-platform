@@ -52,6 +52,14 @@ async function main() {
                 if (!payload) return console.log("error payload doesnt exist");
                 
                 if (message.type === "signUp") {
+                    const existingUser = users.find(u => u.userId === payload.email)
+                    if (existingUser) {
+                        await stream.xAdd("EN-EX", "*", {
+                            randomId : message.randomId,
+                            success: "false"
+                        })    
+                        continue
+                    }
                     users.push({
                         userId: payload.email,
                         balance: {

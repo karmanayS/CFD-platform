@@ -55,7 +55,7 @@ signupRouter.post("/" , async(req,res) => {
         })
         if (message.success === "false") return res.json({
             success: false,
-            message : "Couldnt signup please try again"
+            message : "Couldnt signup please try again or login"
         })
 
         const {data,error} = await resend.emails.send({
