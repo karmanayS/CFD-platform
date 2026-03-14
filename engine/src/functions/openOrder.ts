@@ -18,11 +18,9 @@ export function createOrder(newOrder:NewOrder,users:User[],openOrders:OpenOrders
             let margin;
             if (newOrder.type === "long") {
                 const askPrice = currentPrice(newOrder.asset,"ask");
-                if (typeof(askPrice) !== "number") return askPrice;
                 margin = qty * askPrice; 
             } else if (newOrder.type === "short") {
                 const bidPrice = currentPrice(newOrder.asset,"bid");
-                if (typeof(bidPrice) !== "number") return bidPrice;
                 margin = qty * bidPrice;
             } else throw new Error("Invalid type of order");
 

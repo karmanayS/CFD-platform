@@ -10,7 +10,6 @@ export function closeOrder(orderId:string,openOrders:OpenOrders[],users:User[]) 
             if (user.userId === order.userId) {
                 if (order.type === "long") {
                     const bidPrice = currentPrice(order.asset,"bid");
-                    if (typeof(bidPrice) !== "number") return bidPrice;
                     const sellingPrice = (order.qty * order.leverage) * bidPrice;
                     const pnl = sellingPrice - order.amount;
                     user.balance.margin -= Math.round(order.margin) * 100;
@@ -18,7 +17,6 @@ export function closeOrder(orderId:string,openOrders:OpenOrders[],users:User[]) 
                     return
                 } else if(order.type === "short") {
                     const askPrice = currentPrice(order.asset,"ask");
-                    if (typeof(askPrice) !== "number") return askPrice;
                     const buyingPrice = (order.qty * order.leverage) * askPrice;
                     const pnl = order.amount - buyingPrice;
                     user.balance.margin -= Math.round(order.margin) * 100;

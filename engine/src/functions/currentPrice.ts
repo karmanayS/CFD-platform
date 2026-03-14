@@ -8,6 +8,6 @@ export function currentPrice(asset:string,type:"bid" | "ask") {
         const price = (PRICES.find(e => e.asset === asset)?.askPrice ?? 0) / ( (asset === "BTC") ? 10000 : 1000000 )
         return price
     } else {
-        return new Error("Invalid price type");
+        throw new Error("Invalid price type");
     }
 }
