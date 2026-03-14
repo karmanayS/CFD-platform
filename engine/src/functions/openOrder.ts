@@ -35,9 +35,8 @@ export function createOrder(newOrder:NewOrder,users:User[],openOrders:OpenOrders
                         user.balance.margin += Math.round(margin) * 100
                         return
                     } else if (newOrder.type === "short") {
-                        //here we dont decrease user balance because we are shorting so , we are getting money
-                        //but make sure then when closing order that u dont add this margin to the balance and just add the pnl
-                        //user.balance.amount -= Math.round(margin) * 100 
+                        //I thought here we dont decrease user balance because we are shorting so , we are getting money but this is actually collateral so we do need to lock it in the margin or else the user will be able to open infinite short positions together since his amount will remain same until he closes his previous short position                  
+                        user.balance.amount -= Math.round(margin) * 100 
                         user.balance.margin += Math.round(margin) * 100
                         return
                     }

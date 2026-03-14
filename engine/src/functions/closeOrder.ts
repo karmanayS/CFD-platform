@@ -23,7 +23,7 @@ export function closeOrder(orderId:string,openOrders:OpenOrders[],users:User[]) 
                     const pnl = order.amount - buyingPrice;
                     user.balance.margin -= Math.round(order.margin) * 100;
 
-                    user.balance.amount +=  (pnl) * 100;
+                    user.balance.amount +=  (order.margin + pnl) * 100;
                     return
                 }
             }

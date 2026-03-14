@@ -24,6 +24,10 @@
 // in xread if at the first try the randomId doesnt match then for the second try in the loop , again our lastId is same so we will receive the same element again but it may be that our element is the one after the element we are receiving but we will keep receiving the same element ie the one after lastId  
 // try catch in all redis functions
 
+//in the poller (* 10000) and in currentPrice() (/ 10000). If you add a new asset or change the factor in one place but not the other, things silently break. The decimal field is passed along in the tick data but never actually used by the engine — it's ignored. The engine hardcodes (asset === "BTC") ? 10000 : 1000000 instead of using 10 ** decimal.The liquidation function (liquidate.ts) does its own price scaling inline rather than using currentPrice(), which is a divergence risk.
+
+
+
 //OPTIMISATIONS:
 //instead of again and again writing the same queue reding logic for userId ,make a function for it if can be made
 //loading...  where we are asynchronously fetching state . suspense /lazyloading 
