@@ -1,12 +1,28 @@
 import express from "express";
+import { z } from "zod";
 import { redis } from "../redisClient";
 import { authMiddlware } from "../middlewares/authMiddleware";
+
+const createOrderSchema = z.object({
+    asset: z.enum(["BTC", "SOL"]),
+    type: z.enum(["long", "short"]),
+    qty: z.number().positive("Quantity must be positive"),
+    leverage: z.number().int().min(1).max(100),
+});
+
+const closeOrderSchema = z.object({
+    orderId: z.string().min(1, "orderId is required"),
+});
 
 const tradeRouter = express.Router();
 
 tradeRouter.post("/create",authMiddlware,async(req,res) => {
+    const parsed = createOrderSchema.safeParse(req.body);
+    if (!parsed.success) {
+        return res.status(400).json({ success: false, message: parsed.error.issues[0].message });
+    }
     const userId = req.userId
-    const {asset,type,qty,leverage} = req.body;
+    const {asset,type,qty,leverage} = parsed.data;
     const randomId = crypto.randomUUID();
 
     try {
@@ -62,7 +78,11 @@ tradeRouter.post("/create",authMiddlware,async(req,res) => {
 })
 
 tradeRouter.post("/close",authMiddlware,async(req,res) => {
-    const {orderId} = req.body;
+    const parsed = closeOrderSchema.safeParse(req.body);
+    if (!parsed.success) {
+        return res.status(400).json({ success: false, message: parsed.error.issues[0].message });
+    }
+    const {orderId} = parsed.data;
     const randomId = crypto.randomUUID();
         
     try {
