@@ -49,11 +49,14 @@ signupRouter.post("/" , async(req,res) => {
         })
         //@ts-ignore
         const message = allMessages[0].messages.find(entry => entry.message.randomId === randomId)
+        if (!message) return res.json({
+            success: false,
+            message : "Couldn't fetch stream message"
+        })
         if (message.success === "false") return res.json({
             success: false,
             message : "Couldnt signup please try again or login"
         })
-
         const {data,error} = await resend.emails.send({
             from: 'onboarding@resend.dev',
             to : [email],

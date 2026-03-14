@@ -46,11 +46,14 @@ signinRouter.post("/", async(req,res) => {
         })
         //@ts-ignore
         const message = allMessages[0].messages.find(entry => entry.message.randomId === randomId)
+        if (!message) return res.json({
+            success: false,
+            message : "Couldn't fetch stream message"
+        })
         if (message.success === "false") return res.json({
             success: false,
             message : "Couldn't signin please try again"
         })
-
         const {data,error} = await resend.emails.send({
             from: 'onboarding@resend.dev',
             to : [email],
@@ -69,12 +72,20 @@ signinRouter.post("/", async(req,res) => {
 })
 
 signinRouter.get("/post",(req,res) => {
-    const token = req.query.token;
-    const decoded = jwt.verify(token as string,process.env.JWT_SECRET as string) as JwtPayload
-    if (!decoded.email) return res.json({
-        success: false,
-        message : "Error while verifying user"
-    })
-    res.cookie("token", token)
-    res.redirect(`${process.env.FRONTEND_URL}/dashboard`)
+    try {
+        const token = req.query.token;
+        const decoded = jwt.verify(token as string,process.env.JWT_SECRET as string) as JwtPayload
+        if (!decoded.email) return res.json({
+            success: false,
+            message : "Error while verifying user"
+        })
+        res.cookie("token", token)
+        res.redirect(`${process.env.FRONTEND_URL}/dashboard`)
+    } catch(err) {
+        console.log(err)
+        res.json({
+            success: false,
+            message: "Internal server error"
+        })
+    }    
 })
