@@ -12,14 +12,14 @@ export function closeOrder(orderId:string,openOrders:OpenOrders[],users:User[]) 
             const bidPrice = currentPrice(order.asset,"bid");
             const sellingPrice = (order.qty * order.leverage) * bidPrice;
             const pnl = sellingPrice - order.amount;
-            user.balance.margin -= Math.round(order.margin) * 100;
+            user.balance.margin -= Math.round(order.margin * 100);
             user.balance.amount += (Math.round(order.margin) + (pnl)) * 100;
         }
         else if(order.type === "short") {
             const askPrice = currentPrice(order.asset,"ask");
             const buyingPrice = (order.qty * order.leverage) * askPrice;
             const pnl = order.amount - buyingPrice;
-            user.balance.margin -= Math.round(order.margin) * 100;
+            user.balance.margin -= Math.round(order.margin * 100);
 
             user.balance.amount +=  (order.margin + pnl) * 100;
         }     

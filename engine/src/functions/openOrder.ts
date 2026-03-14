@@ -29,12 +29,12 @@ export function createOrder(newOrder:NewOrder,users:User[],openOrders:OpenOrders
             if (!user) throw new Error("user not found")
             if (margin > (user.balance.amount/100)) throw new Error("invalid balance");
             if (newOrder.type === "long") {
-                user.balance.amount -= Math.round(margin) * 100
-                user.balance.margin += Math.round(margin) * 100
+                user.balance.amount -= Math.round(margin * 100)
+                user.balance.margin += Math.round(margin * 100)
             } else if (newOrder.type === "short") {
                 //I thought here we dont decrease user balance because we are shorting so , we are getting money but that would be leverage and this is margin which means it is actually collateral so we do need to lock it in the margin or else the user will be able to open infinite short positions together since his amount will remain same until he closes his previous short position                  
-                user.balance.amount -= Math.round(margin) * 100 
-                user.balance.margin += Math.round(margin) * 100
+                user.balance.amount -= Math.round(margin * 100) 
+                user.balance.margin += Math.round(margin * 100)
             }
             const orderId = crypto.randomUUID();
             openOrders.push({
