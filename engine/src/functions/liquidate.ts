@@ -11,7 +11,7 @@ export default function liquidate(openOrders:OpenOrders[],prices:Prices[],users:
         let liquidationPrice:number
         if (order.type === "long") {
             currentPrice = order.qty * order.leverage * ((prices.find(e => e.asset === asset)?.bidPrice as number) / ((openOrders[i].asset === "BTC") ? 10000 : 1000000)) 
-            liquidationPrice = (order.amount - margin) / 100
+            liquidationPrice = order.amount - margin
             
             if (currentPrice <= liquidationPrice) {
                 //update user balance
@@ -24,22 +24,23 @@ export default function liquidate(openOrders:OpenOrders[],prices:Prices[],users:
                 //remove from open orders
                 const index = openOrders.indexOf(order);
                 openOrders.splice(index,1);
+                i--;
             }
         } else {
             currentPrice = order.qty * order.leverage * ((prices.find(e => e.asset === asset)?.askPrice as number) / ((openOrders[i].asset === "BTC") ? 10000 : 1000000));
-            liquidationPrice = (order.amount + margin) / 100;
+            liquidationPrice = order.amount + margin
 
             if (currentPrice >= liquidationPrice) {
                 //update user balance
                 for (const user of users) {
                     if (user.userId === userId) {
                         user.balance.margin -= order.margin
-                        user.balance.amount -= order.margin //because margin is the PNL in this case and for short orders we are not subtracting margin from the balance when placing order and just adding PNL to the balance when closing order so here PNL = margin
                     } 
                 }
                 //remove from open orders
                 const index = openOrders.indexOf(order);
                 openOrders.splice(index,1);
+                i--;
             }
         }
     }

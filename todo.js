@@ -37,3 +37,29 @@
 //For the above case just add the margin section to the FE and when a sell order will be placed , the user balance wont be decreased but the margin will be increased and when the order will be closed , only the PNL will be added to the user balance and the margin will be completely subtracted and returned to the platform probably 
 
 //Also in a real application like this if we are trading against a platform then the platform balance should increase when the user balance decreases and vice versa
+
+
+//Explanations: 
+// 1) Why i-- after splice in liquidate function : Say you have 3 orders that all need liquidating:
+
+
+// openOrders = [orderA, orderB, orderC]
+//                i=0      i=1     i=2
+// Iteration 1 (i=0): orderA gets liquidated, splice(0, 1) removes it.
+
+
+// openOrders = [orderB, orderC]
+//                i=0     i=1
+// Now i++ makes i=1. But orderB shifted from index 1 to index 0.
+
+// Iteration 2 (i=1): Checks orderC. orderB was skipped entirely.
+
+// Iteration 3 (i=2): i < openOrders.length (2 < 1) is false, loop ends.
+
+// So orderB never gets checked for liquidation. It survives until the next tick, which is probably fine in practice since ticks come in rapidly — but if price gaps hard, you'd want all liquidations to happen in one pass.
+
+// The fix is just adding i-- after each splice so the loop re-checks the same index:
+
+
+// openOrders.splice(index, 1);
+// i--;
