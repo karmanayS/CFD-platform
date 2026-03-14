@@ -4,22 +4,27 @@ import { createClient } from "redis";
 const wss = new WebSocketServer({port : 8080});
 const redis = createClient();
 
-async function main() {    
-    try {    
+async function main() {
+    try {
         await redis.connect();
 
-        wss.on("connection" ,async(ws) => {
+        await redis.subscribe("TICKS",(message) => {
+            wss.clients.forEach((client) => {
+                if (client.readyState === client.OPEN) {
+                    client.send(message);
+                }
+            });
+        })
+
+        wss.on("connection",(ws) => {
             ws.on("error",console.error);
-            await redis.subscribe("TICKS",(message,channel) => {
-                ws.send(message);
-            })        
         })
 
         console.log("WS server running on port 8080")
     } catch (err) {
         console.log(err);
-        return 
-    }    
+        return
+    }
 }
 
 main()
