@@ -51,7 +51,7 @@ orderRouter.get("/openOrders",authMiddlware,async(req,res) => {
         })
     } catch(err) {
         console.log(err);
-        return res.status(500).json({message : "Error while fething open orders"})
+        return res.status(500).json({success: false,message : "Error while fetching open orders"})
     }
        
 })

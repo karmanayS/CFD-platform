@@ -61,7 +61,7 @@ signinRouter.post("/", async(req,res) => {
             subject: 'authentication',
             html: `<a href="http://localhost:3000/api/v1/signin/post?token=${token}"> Signin </a>`
         })
-        if (error) return res.json({error})
+        if (error) return res.json({success: false,message: "Error while sending email"})
         res.json({success: true,message:'email sent successfully'})
     } catch(err) {
         console.log(err)
