@@ -4,10 +4,6 @@ import { authMiddlware } from "../middlewares/authMiddleware";
 
 export const balanceRouter = express.Router();
 
-balanceRouter.get("/",async(req,res) => {
-    const {userId} = req.body;
-})
-
 balanceRouter.get("/usd",authMiddlware,async(req,res) => {
     const userId = req.userId;
     const randomId = crypto.randomUUID();

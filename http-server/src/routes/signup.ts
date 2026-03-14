@@ -62,7 +62,7 @@ signupRouter.post("/" , async(req,res) => {
             from: 'onboarding@resend.dev',
             to : [email],
             subject: 'authentication',
-            html: `<a href="http://localhost:3000/api/v1/signin/post?token=${token}> Signin </a>"`
+            html: `<a href="http://localhost:3000/api/v1/signin/post?token=${token}"> Signin </a>`
             })
         if (error) return res.json({
             success: false,
