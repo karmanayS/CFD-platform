@@ -89,7 +89,6 @@ async function main() {
                     const response = createOrder(payload,users,openOrders,PRICES);  
                     await stream.xAdd("EN-EX","*",{
                         randomId: message.randomId,
-                        type : "orderId",
                         payload: JSON.stringify({
                             orderId: response
                         })
@@ -101,7 +100,6 @@ async function main() {
                     const status = closeOrder(payload.orderId,openOrders,users);
                     await stream.xAdd("EN-EX","*",{
                         randomId: message.randomId,
-                        type : "closeOrderStatus",
                         payload : JSON.stringify({
                             status
                         })
@@ -129,12 +127,7 @@ async function main() {
                 }
 
                 if(message.type === "getOpenOrders") {
-                    const orders:OpenOrders[] = [];
-                    openOrders.map((o) => {
-                        if (o.userId === payload.userId) {
-                            orders.push(o);
-                        }
-                    })
+                    const orders = openOrders.filter(o => o.userId === payload.userId)
                     await stream.xAdd("EN-EX", "*" ,{
                         randomId: message.randomId,
                         payload : JSON.stringify({

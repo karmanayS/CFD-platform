@@ -123,14 +123,6 @@ tradeRouter.post("/close",authMiddlware,async(req,res) => {
             success : true,
             status: payload.status
         }) 
-        // if (data) {
-        //     //@ts-ignore
-        //     const message = data[0].messages[0].message;
-        //     if (message.randomId !== randomId) continue;
-        //     const payload = JSON.parse(message.payload);
-        //     if (payload.status === "ERROR") throw new Error("couldnt close order on engine")
-        //     if (message.type === "closeOrderStatus") return res.json({status : payload.status});
-        // } else throw new Error("no data received from stream")
     } catch (err) {
         console.log(err);
         return res.status(500).json({success: false,messsage : "error while closing order"})
