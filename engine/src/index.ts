@@ -90,7 +90,7 @@ async function main() {
                     await stream.xAdd("EN-EX","*",{
                         randomId: message.randomId,
                         payload: JSON.stringify({
-                            orderId: response
+                            response
                         })
                     })
                     console.log(openOrders);

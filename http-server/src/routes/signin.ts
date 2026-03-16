@@ -13,7 +13,7 @@ export const signinRouter = express.Router();
 signinRouter.post("/", async(req,res) => {
     const {email} = req.body;
     const parsedEmail = z.email().safeParse(email)
-    if (!parsedEmail.success) return res.json({success: false, message: "Invalid user input"})
+    if (!parsedEmail.success) return res.status(400).json({success: false, message: "Invalid user input"})
     const token = jwt.sign({email: parsedEmail.data},process.env.JWT_SECRET as string, { expiresIn: "7d" });
     
     // check for user in engine
@@ -36,7 +36,7 @@ signinRouter.post("/", async(req,res) => {
         })
         const message = await streamReader(lastId,randomId)
         console.log(message)
-        if (message.message.success === "false") return res.json({
+        if (message.message.success === "false") return res.status(400).json({
             success: false,
             message : "Couldn't signin please try again"
         })
@@ -46,11 +46,11 @@ signinRouter.post("/", async(req,res) => {
             subject: 'authentication',
             html: `<a href="${process.env.API_BASE_URL}/api/v1/signin/post?token=${token}"> Signin </a>`
         })
-        if (error) return res.json({success: false,message: "Error while sending email"})
+        if (error) return res.status(500).json({success: false,message: "Error while sending email"})
         res.json({success: true,message:'email sent successfully'})
     } catch(err) {
         console.log(err)
-        return res.json({
+        return res.status(500).json({
             success: false,
             message : "Error during Sign in"
         })
@@ -61,17 +61,17 @@ signinRouter.get("/post",(req,res) => {
     try {
         const token = req.query.token;
         const decoded = jwt.verify(token as string,process.env.JWT_SECRET as string) as JwtPayload
-        if (!decoded.email) return res.json({
+        if (!decoded.email) return res.status(401).json({
             success: false,
-            message : "Error while verifying user"
+            message : "Invalid or expired auth token"
         })
         res.cookie("token", token)
         res.redirect(`${process.env.FRONTEND_URL}/dashboard`)
     } catch(err) {
         console.log(err)
-        res.json({
+        res.status(401).json({
             success: false,
-            message: "Internal server error"
+            message: "Invalid or expired auth token"
         })
     }    
 })

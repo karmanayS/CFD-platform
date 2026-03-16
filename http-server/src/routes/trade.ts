@@ -47,9 +47,11 @@ tradeRouter.post("/create",authMiddlware,async(req,res) => {
             })
         })
         const message = await streamReader(lastId,randomId)
+        const payload = JSON.parse(message.message.payload)
+        if (payload.response === "ERROR") throw new Error("couldnt create order on engine")
         return res.json({
             success : true,
-            orderId: JSON.parse(message.message.payload).orderId
+            orderId: payload.response
         })   
     } catch (err) {
         console.log(err);

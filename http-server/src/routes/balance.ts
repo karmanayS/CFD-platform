@@ -32,7 +32,7 @@ balanceRouter.get("/usd",authMiddlware,async(req,res) => {
         })    
     } catch (err) {
         console.log(err)
-        return res.json({success:false,message : "error while fetching usd balance"})
+        return res.status(500).json({success:false,message : "error while fetching usd balance"})
     } 
     
 })

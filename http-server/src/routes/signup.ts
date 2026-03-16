@@ -13,7 +13,7 @@ export const signupRouter = express.Router();
 signupRouter.post("/" , async(req,res) => {
     const {email} = req.body;
     const parsedEmail = z.email().safeParse(email)
-    if (!parsedEmail.success) return res.json({
+    if (!parsedEmail.success) return res.status(400).json({
         success : false,
         message: "Invalid user input"
     })
@@ -39,7 +39,7 @@ signupRouter.post("/" , async(req,res) => {
         })
         const message = await streamReader(lastId,randomId)
         console.log(message)
-        if (message.message.success === "false") return res.json({
+        if (message.message.success === "false") return res.status(400).json({
             success: false,
             message : "Couldnt signup please try again or login"
         })
@@ -49,7 +49,7 @@ signupRouter.post("/" , async(req,res) => {
             subject: 'authentication',
             html: `<a href="${process.env.API_BASE_URL}/api/v1/signin/post?token=${token}"> Signin </a>`
             })
-        if (error) return res.json({
+        if (error) return res.status(500).json({
             success: false,
             message: "Error sending email"
         })
@@ -59,7 +59,7 @@ signupRouter.post("/" , async(req,res) => {
         })
     } catch (err) {
         console.log(err)
-        return res.json({
+        return res.status(500).json({
             success: false,
             message: "Error during signup"
         })
