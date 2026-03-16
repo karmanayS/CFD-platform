@@ -70,10 +70,11 @@ function connectToBackpack() {
 }
 
 async function main() {
-    try {await redis.connect();}
-    catch (err) { return console.log(err)};
-
+    await redis.connect()
     connectToBackpack();
 }
 
-main();
+main().catch(err => {
+    console.log(err)
+    process.exit(1)
+});
