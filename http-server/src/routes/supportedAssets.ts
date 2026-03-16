@@ -5,7 +5,7 @@ import { streamReader } from "../helpers/streamReader";
 
 const assetRouter = express.Router();
 
-assetRouter.get("/",async(req,res) => {
+assetRouter.get("/",authMiddlware,async(req,res) => {
     const randomId = crypto.randomUUID()   
     try {
         const response = await redis.xRevRange('EN-EX', '+', '-', {COUNT: 1});
