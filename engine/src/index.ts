@@ -106,7 +106,7 @@ async function main() {
                 }
                 
                 if(message.type === "closeOrder") {
-                    const status = closeOrder(payload.orderId,openOrders,users);
+                    const status = closeOrder(payload.orderId,payload.userId,openOrders,users);
                     await stream.xAdd("EN-EX","*",{
                         randomId: message.randomId,
                         payload : JSON.stringify({

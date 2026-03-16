@@ -65,6 +65,7 @@ tradeRouter.post("/close",authMiddlware,async(req,res) => {
         return res.status(400).json({ success: false, message: parsed.error.issues[0].message });
     }
     const {orderId} = parsed.data;
+    const userId = req.userId
     const randomId = crypto.randomUUID();
         
     try {
@@ -80,7 +81,8 @@ tradeRouter.post("/close",authMiddlware,async(req,res) => {
             randomId,
             type: "closeOrder",
             payload: JSON.stringify({
-                orderId
+                orderId,
+                userId
             })
         })
         const message = await streamReader(lastId,randomId)

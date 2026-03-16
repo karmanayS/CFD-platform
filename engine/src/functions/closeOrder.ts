@@ -1,8 +1,8 @@
 import { OpenOrders, User } from "../types";
 import { currentPrice } from "./currentPrice";
 
-export function closeOrder(orderId:string,openOrders:OpenOrders[],users:User[]) {
-    const order = openOrders.find(o => o.orderId === orderId);
+export function closeOrder(orderId:string,userId:string,openOrders:OpenOrders[],users:User[]) {
+    const order = openOrders.find(o => o.orderId === orderId && o.userId === userId);
     try {    
         if (order === undefined) throw new Error("couldnt find order");
         //update user balance
