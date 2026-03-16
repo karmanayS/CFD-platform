@@ -25,8 +25,8 @@
 // try catch in all redis functions
 
 //in the poller (* 10000) and in currentPrice() (/ 10000). If you add a new asset or change the factor in one place but not the other, things silently break. The decimal field is passed along in the tick data but never actually used by the engine — it's ignored. The engine hardcodes (asset === "BTC") ? 10000 : 1000000 instead of using 10 ** decimal.The liquidation function (liquidate.ts) does its own price scaling inline rather than using currentPrice(), which is a divergence risk.
-
 //message.message.payload.success in signin/signup route ? log the message and check
+//cookie configuration not set
 
 //OPTIMISATIONS:
 //loading...  where we are asynchronously fetching state . suspense /lazyloading 
