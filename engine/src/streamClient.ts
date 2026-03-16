@@ -2,13 +2,13 @@ import { createClient } from "redis";
 
 export const stream = createClient();
 
-async function connectClient() {
+export async function connectStreamClient() {
     try {
         await stream.connect()
-        console.log("connected to redis client");
+        console.log("connected to stream client successfully");
     }
     catch(err) {
-        return console.log(err);
+        console.log("Error while connecting to stream client , exiting process...");
+        process.exit(1)
     }
 }
-connectClient();

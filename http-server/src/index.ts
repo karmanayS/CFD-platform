@@ -8,6 +8,7 @@ import assetRouter from "./routes/supportedAssets";
 import { orderRouter } from "./routes/orders";
 import { klineRouter } from "./routes/klineRouter";
 import cookieParser from "cookie-parser"
+import { redis } from "./redisClient";
 
 const app = express()
 
@@ -25,6 +26,14 @@ app.use("/api/v1/supportedAssets",assetRouter);
 app.use("/api/v1/orders", orderRouter);
 app.use("/api/v1/klines",klineRouter)
 
-app.listen(3000,() => {
-    console.log("listening on port 3000 ...")
-});
+async function main() {
+    await redis.connect()
+    app.listen(3000,() => {
+        console.log("listening on port 3000 ...")
+    });
+}
+
+main().catch((err) => {
+    console.log("Error during startup , exiting process...")
+    process.exit(1)
+})

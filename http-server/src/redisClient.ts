@@ -2,13 +2,6 @@ import { createClient } from "redis";
 
 export const redis = createClient();
 
-async function redisConnect() {
-    try {await redis.connect()}
-    catch(err) {
-        return console.log(err);
-    }
-}
-
 // interface Order {
 //     asset:string,
 //     type: "long" | "short",
@@ -46,5 +39,3 @@ async function redisConnect() {
 // } 
 
 // ==> THE CLASS MAKES THE EDITOR LAG IN ALL THE DEVICES NOT JUST MINE . WHY ?
-
-redisConnect();

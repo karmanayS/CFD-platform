@@ -1,18 +1,27 @@
 import { createClient } from "redis";
 import { openOrders, PRICES, supportedAssets, users } from "./db";
 import { getUsdBalance } from "./functions/getUsdBalance";
-import { stream } from "./streamClient";
+import { connectStreamClient, stream } from "./streamClient";
 import { createOrder } from "./functions/openOrder";
 import { closeOrder } from "./functions/closeOrder";
 import liquidate from "./functions/liquidate";
-import { OpenOrders } from "./types";
 
 const redis = createClient();
+async function connectRedis() {
+    try {
+        await redis.connect();
+        console.log("Connected to redis successfully")
+    } catch (error) {
+        console.log("Error connecting to redis, exiting process...")
+        process.exit(1)
+    }
+}
 
 async function main() {
     try {
-        await redis.connect();
-
+        await connectRedis()        
+        await connectStreamClient()
+        
         await redis.subscribe("TICKS",(message,channel) => {
             const data = JSON.parse(message);
             const arr = data.price_updates;
@@ -44,7 +53,7 @@ async function main() {
             })
 
             if (!data) return console.log("error data doesnt exist");
-            
+            //@ts-ignore
             for (const element of data[0].messages) {
                 lastId = element.id
                 const message = element.message
