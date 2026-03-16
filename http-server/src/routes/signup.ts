@@ -4,6 +4,7 @@ import {Resend} from "resend";
 import "dotenv/config"; 
 import * as z from "zod";
 import { redis } from "../redisClient"
+import { streamReader } from "../helpers/streamReader";
 
 const resend = new Resend(process.env.RESEND_API_KEY ?? "");
 
@@ -36,24 +37,9 @@ signupRouter.post("/" , async(req,res) => {
                 email
             })
         })
-
-        const allMessages = await redis.xRead({
-            key: "EN-EX",
-            id: lastId
-        }, {
-            BLOCK:0
-        })
-        if (!allMessages) return res.json({
-            success: false,
-            message: "Did not receive signup status from stream"
-        })
-        //@ts-ignore
-        const message = allMessages[0].messages.find(entry => entry.message.randomId === randomId)
-        if (!message) return res.json({
-            success: false,
-            message : "Couldn't fetch stream message"
-        })
-        if (message.success === "false") return res.json({
+        const message = await streamReader(lastId,randomId)
+        console.log(message)
+        if (message.message.success === "false") return res.json({
             success: false,
             message : "Couldnt signup please try again or login"
         })

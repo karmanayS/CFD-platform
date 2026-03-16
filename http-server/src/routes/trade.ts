@@ -2,6 +2,7 @@ import express from "express";
 import { z } from "zod";
 import { redis } from "../redisClient";
 import { authMiddlware } from "../middlewares/authMiddleware";
+import { streamReader } from "../helpers/streamReader";
 
 const createOrderSchema = z.object({
     asset: z.enum(["BTC", "SOL"]),
@@ -45,24 +46,7 @@ tradeRouter.post("/create",authMiddlware,async(req,res) => {
                 userId
             })
         })
-
-        
-        const allMessages = await redis.xRead({
-            key: "EN-EX",
-            id : lastId
-        }, {
-            BLOCK : 0
-        })
-        if (!allMessages) return res.json({
-            success: false,
-            message: "Did not receive newly created order from engine"
-        })
-        //@ts-ignore
-        const message = allMessages[0].messages.find(entry => entry.message.randomId === randomId)
-        if (!message) return res.json({
-            success: false,
-            message : "Couldn't fetch newly created order"
-        })
+        const message = await streamReader(lastId,randomId)
         return res.json({
             success : true,
             orderId: JSON.parse(message.message.payload).orderId
@@ -97,22 +81,7 @@ tradeRouter.post("/close",authMiddlware,async(req,res) => {
                 orderId
             })
         })
-        const allMessages = await redis.xRead({
-            key: "EN-EX",
-            id : lastId
-        }, {
-            BLOCK: 0
-        })
-        if (!allMessages) return res.json({
-            success: false,
-            message: "Did not receive closed order from engine"
-        })
-        //@ts-ignore
-        const message = allMessages[0].messages.find((entry) => entry.message.randomId === randomId)
-        if (!message) return res.json({
-            success: false,
-            message : "Couldn't fetch closed order id"
-        })
+        const message = await streamReader(lastId,randomId)
         const payload = JSON.parse(message.message.payload)
         if (payload.status === "ERROR") throw new Error("couldnt close order on engine")
         return res.json({

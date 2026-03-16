@@ -1,6 +1,7 @@
 import express from "express";
 import { redis } from "../redisClient";
 import { authMiddlware } from "../middlewares/authMiddleware";
+import { streamReader } from "../helpers/streamReader";
 
 const assetRouter = express.Router();
 
@@ -22,24 +23,7 @@ assetRouter.get("/",async(req,res) => {
                 message: "null"
             })
         })
-
-        const allMessages = await redis.xRead({
-            key: "EN-EX",
-            id: lastId
-        }, {
-            BLOCK:0
-        })
-
-        if (!allMessages) return res.json({
-            success: false,
-            message: "Did not receive supported assets from engine"
-        })
-        //@ts-ignore
-        const message = allMessages[0].messages.find(entry => entry.message.randomId === randomId)
-        if (!message) return res.json({
-            success: false,
-            message : "Couldn't fetch supported assets"
-        })
+        const message = await streamReader(lastId,randomId)
         return res.json({
             success : true,
             supportedAssets: JSON.parse(message.message.payload).supportedAssets

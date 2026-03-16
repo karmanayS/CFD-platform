@@ -1,6 +1,7 @@
 import express from "express";
 import { redis } from "../redisClient";
 import { authMiddlware } from "../middlewares/authMiddleware";
+import { streamReader } from "../helpers/streamReader";
 
 export const balanceRouter = express.Router();
 
@@ -24,27 +25,11 @@ balanceRouter.get("/usd",authMiddlware,async(req,res) => {
                 userId
             })
         })
-
-        const allMessages = await redis.xRead({
-            key: "EN-EX",
-            id: lastId
-        }, {
-            BLOCK:0
-        })
-        if (!allMessages) return res.json({
-            success: false,
-            message: "Did not receive user USD balance from engine"
-        })
-        //@ts-ignore
-        const message = allMessages[0].messages.find(entry => entry.message.randomId === randomId)
-        if (!message) return res.json({
-            success: false,
-            message : "Couldn't fetch user balance"
-        })
+        const message = await streamReader(lastId,randomId)
         return res.json({
             success : true,
             usdBalance: JSON.parse(message.message.payload).usdBalance
-        })
+        })    
     } catch (err) {
         console.log(err)
         return res.json({success:false,message : "error while fetching usd balance"})
