@@ -1,8 +1,8 @@
 import express from "express";
 import { z } from "zod";
 import { redis } from "../redisClient";
-import { authMiddlware } from "../middlewares/authMiddleware";
 import { streamReader } from "../helpers/streamReader";
+import { authMiddleware } from "../middlewares/authMiddleware";
 
 const createOrderSchema = z.object({
     asset: z.enum(["BTC", "SOL"]),
@@ -17,7 +17,7 @@ const closeOrderSchema = z.object({
 
 const tradeRouter = express.Router();
 
-tradeRouter.post("/create",authMiddlware,async(req,res) => {
+tradeRouter.post("/create",authMiddleware,async(req,res) => {
     const parsed = createOrderSchema.safeParse(req.body);
     if (!parsed.success) {
         return res.status(400).json({ success: false, message: parsed.error.issues[0].message });
@@ -55,11 +55,11 @@ tradeRouter.post("/create",authMiddlware,async(req,res) => {
         })   
     } catch (err) {
         console.log(err);
-        return res.status(500).json({success: false,message : "error while creating oder"})
+        return res.status(500).json({success: false,message : "error while creating order"})
     }       
 })
 
-tradeRouter.post("/close",authMiddlware,async(req,res) => {
+tradeRouter.post("/close",authMiddleware,async(req,res) => {
     const parsed = closeOrderSchema.safeParse(req.body);
     if (!parsed.success) {
         return res.status(400).json({ success: false, message: parsed.error.issues[0].message });

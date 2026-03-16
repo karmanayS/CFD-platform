@@ -1,11 +1,11 @@
 import express from "express";
 import { redis } from "../redisClient";
-import { authMiddlware } from "../middlewares/authMiddleware";
 import { streamReader } from "../helpers/streamReader";
+import { authMiddleware } from "../middlewares/authMiddleware";
 
 export const orderRouter = express.Router();
 
-orderRouter.get("/openOrders",authMiddlware,async(req,res) => {
+orderRouter.get("/openOrders",authMiddleware,async(req,res) => {
     const userId = req.userId;
     const randomId = crypto.randomUUID()
     

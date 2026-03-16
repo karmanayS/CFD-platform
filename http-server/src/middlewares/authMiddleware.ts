@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
-export function authMiddlware(req:Request,res:Response,next:NextFunction) {
+export function authMiddleware(req:Request,res:Response,next:NextFunction) {
     const {token} = req.cookies;
     if (!token) return res.status(401).json({
         success: false,

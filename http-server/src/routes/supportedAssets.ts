@@ -1,11 +1,11 @@
 import express from "express";
 import { redis } from "../redisClient";
-import { authMiddlware } from "../middlewares/authMiddleware";
 import { streamReader } from "../helpers/streamReader";
+import { authMiddleware } from "../middlewares/authMiddleware";
 
 const assetRouter = express.Router();
 
-assetRouter.get("/",authMiddlware,async(req,res) => {
+assetRouter.get("/",authMiddleware,async(req,res) => {
     const randomId = crypto.randomUUID()   
     try {
         const response = await redis.xRevRange('EN-EX', '+', '-', {COUNT: 1});
