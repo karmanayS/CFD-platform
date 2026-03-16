@@ -3,9 +3,13 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 
 export function authMiddlware(req:Request,res:Response,next:NextFunction) {
     const {token} = req.cookies;
+    if (!token) return res.status(401).json({
+        success: false,
+        message: "Empty token"
+    })
     try {
         const decoded = jwt.verify(token as string,process.env.JWT_SECRET as string) as JwtPayload
-        if (!decoded.email) return res.json({
+        if (!decoded.email) return res.status(401).json({
             success : false,
             message : "Invalid auth token"
         })
@@ -13,9 +17,9 @@ export function authMiddlware(req:Request,res:Response,next:NextFunction) {
         next()
     } catch (err) {
         console.log(err)
-        return res.status(500).json({
+        return res.status(401).json({
             success : false,
-            message : "Error while authenticating user"
+            message : "Invalid or expired auth token"
         })
     }    
 }

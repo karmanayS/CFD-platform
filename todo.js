@@ -28,10 +28,10 @@
 
 //message.message.payload.success in signin/signup route ? log the message and check
 
-
 //OPTIMISATIONS:
-//instead of again and again writing the same queue reding logic for userId ,make a function for it if can be made
 //loading...  where we are asynchronously fetching state . suspense /lazyloading 
+//make evrything scalable and have failure backups for engine etc ==> asks AI to deeply analyze for optimisations like this and maybe perfromance optimisations also
+//command for ai Exclude the frontend and do a detailed code review of the main architectural issues and what should be fixed first in the whole backend flow.
 
 //IMPORTANT
 // You shouldnt decrease the user balance when selling which u are doing currently , on the frontend, th user balance should increase because they are selling maybe put that increased balance in locked. But on the backend there is no selling actually going on under the hood we are just buying bidPrice.
