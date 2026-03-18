@@ -34,7 +34,7 @@ export const usePriceFeed = () => {
     ]
 
     useEffect(() => {
-        const socket = new WebSocket("ws://localhost:8080");
+        const socket = new WebSocket(import.meta.env.VITE_WS_BASE_URL);
 
         socket.onopen = () => {
             console.log("connected to ws server");
