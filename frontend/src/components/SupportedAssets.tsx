@@ -30,7 +30,7 @@ export const SupportedAssets = ({
     fetchData();
   }, []);
 
-  if (!assets) return <div> Loading ...</div>;
+  if (assets.length === 0) return <div> Loading ...</div>;
 
   return (
     <div className="flex flex-col p-2 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-[0_4px_20px_rgba(0,0,0,0.3)] w-80">
