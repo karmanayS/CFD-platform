@@ -38,9 +38,11 @@ export const PlaceOrder = ({
       );
       if (response.status !== 200) throw new Error("didnt receive orderId");
       toast.success("Placed order successfully");
+      return true
     } catch (err) {
       toast.error("ERROR: couldn't place order");
-      return console.log(err);
+      console.log(err);
+      return false
     }
   }
 
@@ -117,7 +119,8 @@ export const PlaceOrder = ({
       
       <button
         onClick={async () => {
-          await placeOrder();
+          const status = await placeOrder();
+          if (!status) return
           dispatch(fetchBalance());
           dispatch(fetchOpenOrders());
         }}

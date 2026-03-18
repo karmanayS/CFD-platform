@@ -13,8 +13,8 @@ export const UsdBalance = () => {
     dispatch(fetchBalance());
   }, []);
 
-  if (loading) <div> Loading... </div>;
-  else if (error) <div> Error </div>;
+  if (loading) return <div> Loading... </div>;
+  else if (error) return <div> Error </div>;
   else {
     return (
       <div className="px-4 py-2 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 shadow-[0_4px_20px_rgba(0,0,0,0.2)] flex items-center gap-2">

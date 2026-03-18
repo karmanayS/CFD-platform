@@ -26,8 +26,7 @@ export function UserAuth({ isSignin }: { isSignin: boolean }) {
                 {/* Submit Button */}
                 <button
                     onClick={async () => {
-                        let url:string;
-                        (isSignin) ? url = `${import.meta.env.VITE_API_BASE_URL}/signin` : url = `${import.meta.env.VITE_API_BASE_URL}/signup`
+                        const url = isSignin ? `${import.meta.env.VITE_API_BASE_URL}/signin` : `${import.meta.env.VITE_API_BASE_URL}/signup`
                         const response = await axios.post(url, {
                             email : emailRef.current
                         })
