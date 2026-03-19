@@ -61,7 +61,7 @@ export const Chart = React.memo(({ asset }: { asset: string }) => {
           "4h" : 4*60*60,
           "12h" : 12*60*60
         }
-        const candleCount = 100
+        const candleCount = 200
         const startTime = Math.floor(Date.now() / 1000) - intervalSeconds[time] * candleCount;
         const response = await axios.get(
           `${
