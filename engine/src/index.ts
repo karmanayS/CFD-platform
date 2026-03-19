@@ -59,7 +59,8 @@ async function main() {
                 const message = element.message
                 const payload = JSON.parse(message.payload)
                 if (!payload) return console.log("error payload doesnt exist");
-                
+                console.log(`Payload ${message.type}: `,payload)
+
                 if (message.type === "signUp") {
                     const existingUser = users.find(u => u.userId === payload.email)
                     if (existingUser) {

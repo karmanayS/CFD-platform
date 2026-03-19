@@ -2,7 +2,6 @@ import { useRef, useState } from "react"
 import axios from "axios"
 import toast, { Toaster } from "react-hot-toast"
 import { Link } from "react-router-dom"
-import { Spinner } from "./ui/Spinner"
 
 export function UserAuth({ isSignin }: { isSignin: boolean }) {
     const emailRef = useRef("")
@@ -46,7 +45,7 @@ export function UserAuth({ isSignin }: { isSignin: boolean }) {
                     }}
                     className="w-full py-2 my-6 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 text-white font-medium text-sm tracking-wide shadow-[0_0_20px_rgba(56,189,248,0.4)] hover:opacity-90 transition"
                 >
-                    {loading ? <Spinner /> : (isSignin ? "Sign in" : "Sign up")}
+                    {loading ? "Please wait ..." : (isSignin ? "Sign in" : "Sign up")}
                 </button>
 
                 { (isSignin) ? <div> New user ? <Link className="underline" to="/signup" >Signup</Link> </div> : <div> Already a member ? <Link className="underline" to="/signin">Signin</Link> </div> }

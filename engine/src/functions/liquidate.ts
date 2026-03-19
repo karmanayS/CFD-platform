@@ -1,8 +1,7 @@
-import { scaleFactor } from "../helpers/scaleFactor";
 import { OpenOrders, Prices, User } from "../types";
 import { currentPrice } from "./currentPrice";
 
-export default function liquidate(openOrders:OpenOrders[],prices:Prices[],users:User[]) {
+export default function liquidate(openOrders:OpenOrders[],users:User[]) {
     for (let i=0;i<openOrders.length;i++) {
         const order = openOrders[i];
         const asset = order.asset;
@@ -12,7 +11,7 @@ export default function liquidate(openOrders:OpenOrders[],prices:Prices[],users:
         let crntPrice:number  
         let liquidationPrice:number
         if (order.type === "long") {
-            crntPrice = currentPrice(asset,"bid") * scaleFactor(asset)
+            crntPrice = currentPrice(asset,"bid") * order.qty * order.leverage
             liquidationPrice = order.amount - margin
             
             if (crntPrice <= liquidationPrice) {
@@ -29,7 +28,7 @@ export default function liquidate(openOrders:OpenOrders[],prices:Prices[],users:
                 i--;
             }
         } else {
-            crntPrice = currentPrice(asset,"ask") * scaleFactor(asset)
+            crntPrice = currentPrice(asset,"ask") * order.qty * order.leverage
             liquidationPrice = order.amount + margin
 
             if (crntPrice >= liquidationPrice) {

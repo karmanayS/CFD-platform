@@ -22,7 +22,9 @@ export const SupportedAssets = ({
       try {
         setLoading(true)
         const response = await axios.get(
-          `${import.meta.env.VITE_API_BASE_URL}/supportedAssets`
+          `${import.meta.env.VITE_API_BASE_URL}/supportedAssets`, {
+            withCredentials: true
+          }
         );
         const supportedAssets = response.data.supportedAssets;
         setAssets(supportedAssets);

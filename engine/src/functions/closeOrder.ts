@@ -3,8 +3,9 @@ import { currentPrice } from "./currentPrice";
 
 export function closeOrder(orderId:string,userId:string,openOrders:OpenOrders[],users:User[]) {
     const order = openOrders.find(o => o.orderId === orderId && o.userId === userId);
+    console.log("Order in close order: ",order)
     try {    
-        if (order === undefined) throw new Error("couldnt find order");
+        if (!order) throw new Error("couldnt find order");
         //update user balance
         const user = users.find(u => u.userId === order.userId)
         if (!user) throw new Error("user not found")

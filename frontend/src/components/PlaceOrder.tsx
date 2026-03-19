@@ -100,7 +100,7 @@ export const PlaceOrder = ({
           <div>
             <OrderValue
               assetPrices={assetPrices}
-              qty={qty}
+              qty={qty ? qty : 0}
               asset={asset}
               leverage={leverage}
               orderType={orderType}
