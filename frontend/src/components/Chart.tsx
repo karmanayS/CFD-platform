@@ -51,13 +51,21 @@ export const Chart = React.memo(({ asset }: { asset: string }) => {
 
     async function getData() {
       try {
+        const intervalSeconds: Record<string,number> = {
+          "1m" : 60,
+          "5m" : 5*60,
+          "15m" : 15*60,
+          "30m" : 30*60,
+          "1h" : 60*60,
+          "4h" : 4*60*60,
+          "12h" : 12*60*60
+        }
+        const candleCount = 100
+        const startTime = Math.floor(Date.now() / 1000) - intervalSeconds[time] * candleCount;
         const response = await axios.get(
           `${
             import.meta.env.VITE_API_BASE_URL
-          }/klines?symbol=${asset}_USDC&interval=${time}&startTime=${(
-            Date.now() / 1000 -
-            80000
-          ).toFixed(0)}`
+          }/klines?symbol=${asset}_USDC&interval=${time}&startTime=${startTime}`
         , {
           withCredentials: true
         });
