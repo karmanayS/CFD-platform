@@ -1,10 +1,12 @@
-import { useRef } from "react"
+import { useRef, useState } from "react"
 import axios from "axios"
 import toast, { Toaster } from "react-hot-toast"
 import { Link } from "react-router-dom"
+import { Spinner } from "./ui/Spinner"
 
 export function UserAuth({ isSignin }: { isSignin: boolean }) {
     const emailRef = useRef("")
+    const [loading,setLoading] = useState(false)
 
     return (
         <div className="flex justify-center items-center w-full min-h-screen p-6">
@@ -26,19 +28,25 @@ export function UserAuth({ isSignin }: { isSignin: boolean }) {
                 {/* Submit Button */}
                 <button
                     onClick={async () => {
-                        const url = isSignin ? `${import.meta.env.VITE_API_BASE_URL}/signin` : `${import.meta.env.VITE_API_BASE_URL}/signup`
-                        const response = await axios.post(url, {
-                            email : emailRef.current
-                        })
-                        if (!response.data.success) {
-                            toast.error("ERROR: Please retry")
-                            return
+                        try {
+                            setLoading(true)
+                            const url = isSignin ? `${import.meta.env.VITE_API_BASE_URL}/signin` : `${import.meta.env.VITE_API_BASE_URL}/signup`
+                            const response = await axios.post(url, {
+                                email : emailRef.current
+                            })
+                            if (!response.data.success) throw new Error("Error: please check your credentials or try again later")
+                            toast.success("Email sent successfully")
+                            setLoading(false)
+                        } catch(err) {
+                            setLoading(false)
+                            if (err instanceof Error) {
+                                toast.error(err.message)
+                            }
                         }
-                        toast.success("Email sent successfully")
                     }}
                     className="w-full py-2 my-6 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 text-white font-medium text-sm tracking-wide shadow-[0_0_20px_rgba(56,189,248,0.4)] hover:opacity-90 transition"
                 >
-                    {isSignin ? "Sign in" : "Sign up"}
+                    {loading ? <Spinner /> : (isSignin ? "Sign in" : "Sign up")}
                 </button>
 
                 { (isSignin) ? <div> New user ? <Link className="underline" to="/signup" >Signup</Link> </div> : <div> Already a member ? <Link className="underline" to="/signin">Signin</Link> </div> }

@@ -14,23 +14,31 @@ export const SupportedAssets = ({
   assetPrices: AssetPrice[];
 }) => {
   const [assets, setAssets] = useState<SupportedAssets[]>([]);
-  
+  const [error,setError] = useState<null | string>(null)
+  const [loading, setLoading] = useState(false)
+
   useEffect(() => {
     async function fetchData() {
       try {
+        setLoading(true)
         const response = await axios.get(
           `${import.meta.env.VITE_API_BASE_URL}/supportedAssets`
         );
         const supportedAssets = response.data.supportedAssets;
         setAssets(supportedAssets);
+        setLoading(false)
       } catch (err) {
+        setError("Error while fetching assets")
+        setLoading(false)
         return console.log(err);
       }
     }
     fetchData();
   }, []);
 
-  if (assets.length === 0) return <div> Loading ...</div>;
+  if (loading) return <div>Loading...</div>
+  if (error) return <div>{error}</div>
+  if (assets.length === 0) return <div> Received no assets </div>;
 
   return (
     <div className="flex flex-col p-2 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-[0_4px_20px_rgba(0,0,0,0.3)] w-80">
