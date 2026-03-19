@@ -17,7 +17,7 @@ export const Dashboard = () => {
       <div className="flex flex-row w-full mb-4">
         <SupportedAssets assetPrices={assetPrices} />
 
-        <div className="flex flex-col flex-1 mx-2 p-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-[0_8px_30px_rgba(0,0,0,0.3)]">
+        <div className="flex flex-col flex-1 min-w-0 mx-2 p-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-[0_8px_30px_rgba(0,0,0,0.3)]">
           
           <div className="mb-4">
             <form className="w-36">
@@ -37,9 +37,8 @@ export const Dashboard = () => {
           </div>
 
           {/* Chart */}
-          <div className="flex-1 rounded-xl overflow-hidden">
+          <div className="flex-1 min-w-0 rounded-xl overflow-hidden">
             <Chart asset={asset} />
-            Chart will be here
           </div>
         </div>
 

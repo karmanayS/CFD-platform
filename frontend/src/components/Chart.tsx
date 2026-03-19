@@ -20,7 +20,8 @@ export const Chart = React.memo(({ asset }: { asset: string }) => {
 
   useEffect(() => {
     if (!chartRef.current) return;
-    const chart = createChart(chartRef.current, {
+    const container = chartRef.current;
+    const chart = createChart(container, {
       width: chartRef.current.clientWidth,
       height: chartRef.current.clientHeight,
       layout: {
@@ -86,7 +87,17 @@ export const Chart = React.memo(({ asset }: { asset: string }) => {
     getData();
     chart.timeScale().fitContent();
 
-    return () => chart.remove();
+    const resizeObserver = new ResizeObserver(() => {
+      chart.resize(container.clientWidth, container.clientHeight);
+      chart.timeScale().fitContent();
+    });
+
+    resizeObserver.observe(container);
+
+    return () => {
+      resizeObserver.disconnect();
+      chart.remove();
+    };
   }, [time, asset]);
 
   return (
