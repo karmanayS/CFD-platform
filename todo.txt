@@ -10,6 +10,7 @@ FEATURES/BUGS:
 9 cookie configuration not set
 10 Snapshotting
 11 liquidate runs in the engine , how to send that event to the frontend so the current open orders dont have the liquidated orders ==> IMPORTANT
+12 remove redux completely and from package.json also
 
 
 OPTIMISATIONS:

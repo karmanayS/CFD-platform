@@ -1,26 +1,21 @@
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "../redux/store";
-import { fetchBalance } from "../redux/slices/balanceSlice";
+import { useBalanceStore } from "../zustand/store";
 
 export const UsdBalance = () => {
-  const { value, loading, error } = useSelector(
-    (state: RootState) => state.balance
-  );
-  const dispatch = useDispatch<AppDispatch>();
+  const {error,loading,balance,fetchBalance} = useBalanceStore()
 
   useEffect(() => {
-    dispatch(fetchBalance());
-  }, []);
+    fetchBalance()
+  }, [fetchBalance]);
 
   if (loading) return <div> Loading... </div>;
-  else if (error) return <div> Error </div>;
+  else if (error) return <div> {error} </div>;
   else {
     return (
       <div className="px-4 py-2 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 shadow-[0_4px_20px_rgba(0,0,0,0.2)] flex items-center gap-2">
         <span className="text-sm text-gray-300">Balance:</span>
         <span className="text-lg font-semibold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-          ${value.toFixed(2)}
+          ${balance.toFixed(2)}
         </span>
       </div>
     );

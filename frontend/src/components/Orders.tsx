@@ -2,23 +2,14 @@ import axios from "axios";
 import { useEffect } from "react";
 import type { AssetPrice } from "../hooks/usePriceFeed";
 import toast from "react-hot-toast";
-import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "../redux/store";
-import {
-  fetchOpenOrders,
-  type OpenOrders,
-} from "../redux/slices/openOrderSlice";
-import { fetchBalance } from "../redux/slices/balanceSlice";
+import { useBalanceStore, useOpenOrdersStore, type OpenOrders } from "../zustand/store";
 
 export const Orders = ({ assetPrices }: { assetPrices: AssetPrice[] }) => {
-  const { openOrders, loading, error } = useSelector(
-    (state: RootState) => state.openOrders
-  );
-  const dispatch = useDispatch<AppDispatch>();
+  const {error,loading,openOrders,fetchOpenOrders} = useOpenOrdersStore()
 
   useEffect(() => {
-    dispatch(fetchOpenOrders());
-  }, []);
+    fetchOpenOrders();
+  }, [fetchOpenOrders]);
 
   return (
     <div className="flex flex-col p-2 ">
@@ -94,7 +85,8 @@ const Pnl = ({
 };
 
 const CloseOrder = ({ orderId }: { orderId: string }) => {
-  const dispatch = useDispatch<AppDispatch>();
+  const {fetchBalance} = useBalanceStore()
+  const {fetchOpenOrders} = useOpenOrdersStore()
 
   async function onclickHandler() {
     try {
@@ -108,8 +100,8 @@ const CloseOrder = ({ orderId }: { orderId: string }) => {
       );
       if (response.status !== 200) throw new Error("Couldnt close order");
       toast.success("Closed order successfully");
-      dispatch(fetchBalance());
-      dispatch(fetchOpenOrders());
+      await fetchBalance()
+      await fetchOpenOrders()
     } catch (err) {
       toast.error("ERROR!: couldn't close order");
       return console.log(err);
