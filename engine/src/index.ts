@@ -34,7 +34,7 @@ async function main() {
                     }
                 }
             })
-            if(openOrders.length > 0) liquidate(openOrders,PRICES,users);
+            if(openOrders.length > 0) liquidate(openOrders,users);
         })
 
         const response = await stream.xRevRange('EN-EX', '+', '-', {COUNT: 1});
