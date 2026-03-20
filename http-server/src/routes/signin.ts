@@ -41,7 +41,7 @@ signinRouter.post("/", async(req,res) => {
             message : "Couldn't signin please try again"
         })
         const {data,error} = await resend.emails.send({
-            from: 'onboarding@resend.dev',
+            from: 'Karmanay <noreply@mail.karmanay.xyz>',
             to : [email],
             subject: 'authentication',
             html: `<a href="${process.env.API_BASE_URL}/api/v1/signin/post?token=${token}"> Signin </a>`
