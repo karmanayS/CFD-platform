@@ -16,7 +16,7 @@ interface Kline {
 
 export const Chart = React.memo(({ asset }: { asset: string }) => {
   const chartRef = useRef<HTMLDivElement>(null);
-  const [time, setTime] = useState("1m");
+  const [time, setTime] = useState("15m");
 
   useEffect(() => {
     if (!chartRef.current) return;
@@ -105,7 +105,7 @@ export const Chart = React.memo(({ asset }: { asset: string }) => {
       
       <form className="w-36 mb-3">
         <select
-          defaultValue="1m"
+          defaultValue="15m"
           onChange={(e) => setTime(e.target.value)}
           className="block w-full text-sm px-3 py-2 rounded-xl bg-transparent border border-transparent text-gray-200 focus:outline-none focus:ring-offset-0 transition cursor-pointer"
         >
