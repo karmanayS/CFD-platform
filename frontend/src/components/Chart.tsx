@@ -45,8 +45,11 @@ export const Chart = React.memo(({ asset }: { asset: string }) => {
           style: 0,
         },
       },
-      timeScale: { borderColor: "rgba(255,255,255,0.1)" },
-      rightPriceScale: { borderColor: "rgba(255,255,255,0.1)" },
+      timeScale: { borderColor: "rgba(255,255,255,0.1)", barSpacing: 10 },
+      rightPriceScale: { borderColor: "rgba(255,255,255,0.1)",scaleMargins: {
+        top: 0.005,
+        bottom: 0.005
+      }},
     });
     const candlestickSeries = chart.addSeries(CandlestickSeries);
 
@@ -70,7 +73,6 @@ export const Chart = React.memo(({ asset }: { asset: string }) => {
         , {
           withCredentials: true
         });
-
         const formattedData = response.data.data.map((item: Kline) => ({
           time: Math.floor(new Date(item.start).getTime() / 1000), // seconds
           open: parseFloat(item.open),
@@ -94,9 +96,34 @@ export const Chart = React.memo(({ asset }: { asset: string }) => {
 
     resizeObserver.observe(container);
 
+    //WS for live candle
+    const socket = new WebSocket(`wss://fstream.binance.com/ws/${asset.toLowerCase()}usdt@kline_${time}`)
+    socket.onopen = () => {
+      console.log("Connected to binance ws server")
+    }
+    socket.onmessage = (message) => {
+      const data = JSON.parse(message.data).k
+      const formatted:any = {
+        time: data.t/1000, //seconds
+        open: parseFloat(data.o),
+        high: parseFloat(data.h),
+        low: parseFloat(data.l),
+        close: parseFloat(data.c)
+      }
+      candlestickSeries.update(formatted)
+    }
+    socket.onerror = (message) => {
+      console.log("Error in binance ws: ",message)
+      socket.close()
+    }
+    socket.onclose = () => {
+      console.log("Disconnected from binance ws server")
+    }
+
     return () => {
       resizeObserver.disconnect();
       chart.remove();
+      socket.close()
     };
   }, [time, asset]);
 
