@@ -1,7 +1,10 @@
 import { WebSocketServer } from "ws";
 import { createClient } from "redis";
+import "dotenv/config"
 
-const redis = createClient();
+const redis = createClient({
+    url: process.env.REDIS_URL ?? "redis://redis:6379"
+});
 
 async function main() {
     const wss = new WebSocketServer({port : 8080});

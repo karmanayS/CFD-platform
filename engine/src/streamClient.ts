@@ -1,6 +1,9 @@
 import { createClient } from "redis";
+import "dotenv/config"
 
-export const stream = createClient();
+export const stream = createClient({
+    url: process.env.REDIS_URL ?? "redis://redis:6379"
+});
 
 export async function connectStreamClient() {
     try {

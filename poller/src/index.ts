@@ -1,11 +1,12 @@
 import { createClient } from "redis";
 import WebSocket from "ws";
+import "dotenv/config"
 
 interface Ticks {
     price_updates : {asset:string,price:number,decimal:number}[]
 };
 
-const redis = createClient();
+const redis = createClient({url: process.env.REDIS_URL ?? "redis://redis:6379"});
 
 const ticks:Ticks = {
     price_updates: [{
