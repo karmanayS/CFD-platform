@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "tsc -b && node dist/index.js",
-    "build": "tsc -b"
+    "build": "npx tsc -b"
   },
   "keywords": [],
   "author": "",
@@ -13,7 +13,8 @@
   "type": "commonjs",
   "dependencies": {
     "dotenv": "^17.3.1",
-    "redis": "^5.8.2"
+    "redis": "^5.8.2",
+    "typescript": "^6.0.2"
   },
   "devDependencies": {
     "@types/node": "^25.5.0"

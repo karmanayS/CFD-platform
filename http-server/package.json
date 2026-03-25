@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "tsc -b && node dist/index.js",
-    "build" : "tsc -b"
+    "build": "npx tsc -b"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +25,7 @@
     "nodemailer": "^7.0.6",
     "redis": "^5.8.2",
     "resend": "^6.0.2",
+    "typescript": "^6.0.2",
     "zod": "^4.1.13"
   }
 }
