@@ -8,7 +8,7 @@ services:
       interval: 5s
       timeout: 3s
       retries: 5
-      start_period: 10s  
+      start_period: 10s    
 
   poller:
     build:
@@ -17,27 +17,30 @@ services:
     depends_on:
       redis:
         condition: service_healthy  
-    
+    env_file:
+      - ./poller/.env
+
   ws:
     build:
       context: ./ws-server
       dockerfile: Dockerfile
     ports: 
       - "8080:8080"
+    env_file: 
+      - ./ws-server/.env
+
   engine:
     build:
       context: ./engine
       dockerfile: Dockerfile
-
+    env_file: 
+      - ./engine/.env
+      
   api:
     build:
       context: ./http-server
       dockerfile: Dockerfile
     ports: 
       - "3000:3000"
-    environment: 
-      - JWT_SECRET=${JWT_SECRET}
-      - FRONTEND_URL=${FRONTEND_URL}
-      - RESEND_API_KEY=${RESEND_API_KEY}
-      - API_BASE_URL=${API_BASE_URL}  
-    
+    env_file: 
+      - ./http-server/.env    
